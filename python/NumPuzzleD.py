@@ -36,13 +36,15 @@ class NumPuzzle:
         raise NotImplementedError
     __matmul__ = _at
 
-    def _find(self, num: Optional[int]) -> Tuple[int, int]:
+    def _find(self, number: Optional[int]) -> Tuple[int, int]:
         raise NotImplementedError
     __rmatmul__ = _find
 
     @property
     def seed(self) -> int:
-        board_sequence = [number for row in self.board for number in row]
+        board_sequence = [-1] * (self.size_x * self.size_y)
+        for number in self._board:
+            board_sequence[self._board[number][1] * self.size_x + self._board[number][0]] = number
         seed = 0
 
         # Sequence from where the numbers would be extracted from when calculating board from seed.
@@ -75,8 +77,8 @@ class NumPuzzle:
 
         # List to numbers which haven't been found in the seed yet.
         sequence = list(range(1, self.size_x * self.size_y)) + [0]
-        # Initialize board with right sizes.
-        board = [[-1] * self.size_x] * self.size_y
+        # Initialize board.
+        board = dict()
 
         # Find number in each position.
         for index_y in range(self.size_y):
@@ -86,15 +88,22 @@ class NumPuzzle:
                 # Get factorial which will be used in the divisions.
                 fact = factorial(remaining_count)
                 # Calculate next number in the sequence.
-                board[index_x][index_y] = sequence.pop(value // fact)
+                board[sequence.pop(value // fact)] = (index_x, index_y)
                 # Remove the already calculated number from the current seed.
                 value %= fact
 
-        self.board = board
+        self._board = board
 
     @property
     def board(self) -> List[List[int]]:
-        return self._board
+        # Initialize variable to be returned.
+        board = [[-1] * self.size_x] * self.size_y
+
+        # For each number, place it in it's correct position.
+        for number in self._board:
+            board[self._board[number][1]][self._board[number][0]] = number
+
+        return board
 
     @board.setter
     def board(self, value: List[List[int]]) -> None:
@@ -109,4 +118,9 @@ class NumPuzzle:
         if not set(range(0, self.size_x * self.size_y)).issubset(num for row in value for num in row):
             raise ValueError
 
-        self._board = value
+        # Clear current board.
+        self._board = dict()
+
+        for x_index in range(self.size_x):
+            for y_index in range(self.size_y):
+                self._board[value[y_index][x_index]] = (x_index, y_index)
