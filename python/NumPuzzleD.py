@@ -1,4 +1,4 @@
-# Bibliotecas importadas.
+# Imported libraries.
 from bisect import bisect
 from math import factorial
 from random import randrange
@@ -32,12 +32,23 @@ class NumPuzzle:
     def size_y(self) -> int:
         return self._size_y
 
-    def _at(self, position: Tuple[int, int]) -> Optional[int]:
-        raise NotImplementedError
+    def _at(self, position: Tuple[int, int]) -> int:
+        # Validate indexes.
+        if not 0 <= position[0] < self.size_x or not 0 <= position[1] < self.size_y:
+            raise ValueError
+
+        # Iterate through positions until the right one is found.
+        for number in self._board:
+            if self._board[number] == position:
+                return number
     __matmul__ = _at
 
     def _find(self, number: Optional[int]) -> Tuple[int, int]:
-        raise NotImplementedError
+        # Validate number.
+        if not 0 <= number < self.size_x * self.size_y:
+            raise ValueError
+
+        return self._board[number]
     __rmatmul__ = _find
 
     @property
@@ -122,4 +133,4 @@ class NumPuzzle:
 
         for x_index in range(self.size_x):
             for y_index in range(self.size_y):
-                self._board[value[y_index][x_index]] = (x_index, y_index)
+                self._board[value[x_index][y_index]] = (x_index, y_index)

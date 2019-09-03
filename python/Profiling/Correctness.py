@@ -26,3 +26,15 @@ class NumPuzzleTests(unittest.TestCase):
             calculated_board = self.NumPuzzle(size=(5, 5), board=random_board).board
             for col_index in range(5):
                 self.assertListEqual(calculated_board[col_index], random_board[col_index])
+
+    def test_at(self):
+        """Test getting a number at a given position. Give a random 5x5 board to NumPuzzle and match all coordinates
+        with the original board."""
+        for i in range(10000):
+            random_sequence = list(range(5 * 5))
+            random.shuffle(random_sequence)
+            random_board = [random_sequence[5 * i:5 * i + 5] for i in range(5)]
+            numpu = self.NumPuzzle(size=(5, 5), board=random_board)
+            for index_x in range(5):
+                for index_y in range(5):
+                    self.assertEqual(random_board[index_x][index_y], numpu @ (index_x, index_y))
