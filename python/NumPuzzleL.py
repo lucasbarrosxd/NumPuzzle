@@ -42,26 +42,27 @@ class NumPuzzle:
 
     @property
     def seed(self) -> int:
-        board_sequence = [number for row in self.board for number in row]
+        board_sequence = [number for col in self.board for number in col]
         seed = 0
 
         # Sequence from where the numbers would be extracted from when calculating board from seed.
-        numbers = []
-        numbers += board_sequence.pop()
+        number = board_sequence.pop()
+        numbers = [number if number != 0 else self.size_x * self.size_y]
         for index in range(1, self.size_x * self.size_y):
             # Get last number.
             number = board_sequence.pop()
             # Find position where the given number would be placed.
             if number != 0:
                 # Find where the number would place.
-                position = bisect(number, numbers)
+                position = bisect(numbers, number)
                 # Add number to the sequence.
                 numbers.insert(position, number)
             else:
                 # Bisect compares numbers but zero needs to be the last number in the sequence.
                 position = len(numbers)
-                # Add number to the sequence.
-                numbers.append(number)
+                # Appending zero to the end would make the sequence unordered. Instead append a number greater than
+                # all numbers that need to be in the sequence.
+                numbers.append(self.size_x * self.size_y)
             # Calculate seed change.
             seed += position * factorial(index)
 
@@ -75,18 +76,18 @@ class NumPuzzle:
 
         # List to numbers which haven't been found in the seed yet.
         sequence = list(range(1, self.size_x * self.size_y)) + [0]
-        # Initialize board with right sizes.
-        board = [[-1] * self.size_x] * self.size_y
+        # Initialize board.
+        board = list()
 
         # Find number in each position.
-        for index_y in range(self.size_y):
-            for index_x in range(self.size_x):
-                # Calculate how many numbers remain after the current number.
-                remaining_count = self.size_x * (self.size_y - index_y) - index_x - 1
+        for index_x in range(self.size_x):
+            # Add new column.
+            board.append(list())
+            for index_y in range(self.size_y):
                 # Get factorial which will be used in the divisions.
-                fact = factorial(remaining_count)
+                fact = factorial(len(sequence) - 1)
                 # Calculate next number in the sequence.
-                board[index_x][index_y] = sequence.pop(value // fact)
+                board[index_x].append(sequence.pop(value // fact))
                 # Remove the already calculated number from the current seed.
                 value %= fact
 
@@ -99,14 +100,14 @@ class NumPuzzle:
     @board.setter
     def board(self, value: List[List[int]]) -> None:
         # Check if number of rows is incorrect.
-        if len(value) != self.size_y:
+        if len(value) != self.size_x:
             raise ValueError
         # Check if any row has the wrong number of columns.
-        for row in value:
-            if len(row) != self.size_x:
+        for column in value:
+            if len(column) != self.size_y:
                 raise ValueError
         # Check if one of each element is present on the board.
-        if not set(range(0, self.size_x * self.size_y)).issubset(num for row in value for num in row):
+        if not set(range(0, self.size_x * self.size_y)).issubset(num for col in value for num in col):
             raise ValueError
 
         self._board = value
