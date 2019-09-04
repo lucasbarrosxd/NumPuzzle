@@ -91,14 +91,14 @@ class NumPuzzle:
     @board.setter
     def board(self, value: List[List[int]]) -> None:
         # Check if number of rows is incorrect.
-        if len(value) != self.size_y:
+        if len(value) != self.size_x:
             raise ValueError
         # Check if any row has the wrong number of columns.
-        for row in value:
-            if len(row) != self.size_x:
+        for column in value:
+            if len(column) != self.size_y:
                 raise ValueError
         # Check if one of each element is present on the board.
-        if not set(range(0, self.size_x * self.size_y)).issubset(num for row in value for num in row):
+        if not set(range(0, self.size_x * self.size_y)).issubset(num for col in value for num in col):
             raise ValueError
 
         board_sequence = [number for row in value for number in row]

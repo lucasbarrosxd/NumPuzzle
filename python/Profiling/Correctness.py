@@ -8,7 +8,7 @@ import random
 
 class NumPuzzleTests(unittest.TestCase):
     # NumPuzzle class used. Change to run a unittest with another class.
-    NumPuzzle = NumPuzzleS.NumPuzzle
+    NumPuzzle = NumPuzzleD.NumPuzzle
 
     def test_seed_basic(self):
         """Test basic operations with seed. Give a random 5x5 seed to NumPuzzle and try to get it back."""
@@ -50,3 +50,101 @@ class NumPuzzleTests(unittest.TestCase):
             for index_x in range(5):
                 for index_y in range(5):
                     self.assertEqual((index_x, index_y), numpu % random_board[index_x][index_y])
+
+    def test_seed_to_board_conversion(self):
+        # Check the 1x1 board.
+        self.assertListEqual(self.NumPuzzle(size=(1, 1), seed=0).board, [[0]])
+        # Check all 2x1 boards.
+        self.assertListEqual(self.NumPuzzle(size=(2, 1), seed=0).board, [[1], [0]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 1), seed=1).board, [[0], [1]])
+        # Check all 1x2 boards.
+        self.assertListEqual(self.NumPuzzle(size=(1, 2), seed=0).board, [[1, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(1, 2), seed=1).board, [[0, 1]])
+        # Check all 3x1 boards.
+        self.assertListEqual(self.NumPuzzle(size=(3, 1), seed=0).board, [[1], [2], [0]])
+        self.assertListEqual(self.NumPuzzle(size=(3, 1), seed=1).board, [[1], [0], [2]])
+        self.assertListEqual(self.NumPuzzle(size=(3, 1), seed=2).board, [[2], [1], [0]])
+        self.assertListEqual(self.NumPuzzle(size=(3, 1), seed=3).board, [[2], [0], [1]])
+        self.assertListEqual(self.NumPuzzle(size=(3, 1), seed=4).board, [[0], [1], [2]])
+        self.assertListEqual(self.NumPuzzle(size=(3, 1), seed=5).board, [[0], [2], [1]])
+        # Check all 1x3 boards.
+        self.assertListEqual(self.NumPuzzle(size=(1, 3), seed=0).board, [[1, 2, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(1, 3), seed=1).board, [[1, 0, 2]])
+        self.assertListEqual(self.NumPuzzle(size=(1, 3), seed=2).board, [[2, 1, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(1, 3), seed=3).board, [[2, 0, 1]])
+        self.assertListEqual(self.NumPuzzle(size=(1, 3), seed=4).board, [[0, 1, 2]])
+        self.assertListEqual(self.NumPuzzle(size=(1, 3), seed=5).board, [[0, 2, 1]])
+        # Check all 2x2 boards.
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=0).board, [[1, 2], [3, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=1).board, [[1, 2], [0, 3]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=2).board, [[1, 3], [2, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=3).board, [[1, 3], [0, 2]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=4).board, [[1, 0], [2, 3]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=5).board, [[1, 0], [3, 2]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=6).board, [[2, 1], [3, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=7).board, [[2, 1], [0, 3]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=8).board, [[2, 3], [1, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=9).board, [[2, 3], [0, 1]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=10).board, [[2, 0], [1, 3]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=11).board, [[2, 0], [3, 1]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=12).board, [[3, 1], [2, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=13).board, [[3, 1], [0, 2]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=14).board, [[3, 2], [1, 0]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=15).board, [[3, 2], [0, 1]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=16).board, [[3, 0], [1, 2]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=17).board, [[3, 0], [2, 1]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=18).board, [[0, 1], [2, 3]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=19).board, [[0, 1], [3, 2]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=20).board, [[0, 2], [1, 3]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=21).board, [[0, 2], [3, 1]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=22).board, [[0, 3], [1, 2]])
+        self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=23).board, [[0, 3], [2, 1]])
+
+    def test_board_to_seed_conversion(self):
+        # Check the 1x1 board.
+        self.assertEqual(self.NumPuzzle(size=(1, 1), board=[[0]]).seed, 0)
+        # Check all 2x1 boards.
+        self.assertEqual(self.NumPuzzle(size=(2, 1), board=[[1], [0]]).seed, 0)
+        self.assertEqual(self.NumPuzzle(size=(2, 1), board=[[0], [1]]).seed, 1)
+        # Check all 1x2 boards.
+        self.assertEqual(self.NumPuzzle(size=(1, 2), board=[[1, 0]]).seed, 0)
+        self.assertEqual(self.NumPuzzle(size=(1, 2), board=[[0, 1]]).seed, 1)
+        # Check all 3x1 boards.
+        self.assertEqual(self.NumPuzzle(size=(3, 1), board=[[1], [2], [0]]).seed, 0)
+        self.assertEqual(self.NumPuzzle(size=(3, 1), board=[[1], [0], [2]]).seed, 1)
+        self.assertEqual(self.NumPuzzle(size=(3, 1), board=[[2], [1], [0]]).seed, 2)
+        self.assertEqual(self.NumPuzzle(size=(3, 1), board=[[2], [0], [1]]).seed, 3)
+        self.assertEqual(self.NumPuzzle(size=(3, 1), board=[[0], [1], [2]]).seed, 4)
+        self.assertEqual(self.NumPuzzle(size=(3, 1), board=[[0], [2], [1]]).seed, 5)
+        # Check all 1x3 boards.
+        self.assertEqual(self.NumPuzzle(size=(1, 3), board=[[1, 2, 0]]).seed, 0)
+        self.assertEqual(self.NumPuzzle(size=(1, 3), board=[[1, 0, 2]]).seed, 1)
+        self.assertEqual(self.NumPuzzle(size=(1, 3), board=[[2, 1, 0]]).seed, 2)
+        self.assertEqual(self.NumPuzzle(size=(1, 3), board=[[2, 0, 1]]).seed, 3)
+        self.assertEqual(self.NumPuzzle(size=(1, 3), board=[[0, 1, 2]]).seed, 4)
+        self.assertEqual(self.NumPuzzle(size=(1, 3), board=[[0, 2, 1]]).seed, 5)
+        # Check all 2x2 boards.
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[1, 2], [3, 0]]).seed, 0)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[1, 2], [0, 3]]).seed, 1)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[1, 3], [2, 0]]).seed, 2)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[1, 3], [0, 2]]).seed, 3)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[1, 0], [2, 3]]).seed, 4)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[1, 0], [3, 2]]).seed, 5)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[2, 1], [3, 0]]).seed, 6)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[2, 1], [0, 3]]).seed, 7)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[2, 3], [1, 0]]).seed, 8)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[2, 3], [0, 1]]).seed, 9)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[2, 0], [1, 3]]).seed, 10)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[2, 0], [3, 1]]).seed, 11)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[3, 1], [2, 0]]).seed, 12)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[3, 1], [0, 2]]).seed, 13)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[3, 2], [1, 0]]).seed, 14)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[3, 2], [0, 1]]).seed, 15)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[3, 0], [1, 2]]).seed, 16)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[3, 0], [2, 1]]).seed, 17)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 1], [2, 3]]).seed, 18)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 1], [3, 2]]).seed, 19)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 2], [1, 3]]).seed, 20)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 2], [3, 1]]).seed, 21)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 3], [1, 2]]).seed, 22)
+        self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 3], [2, 1]]).seed, 23)
