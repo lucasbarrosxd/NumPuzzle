@@ -12,6 +12,8 @@ class NumPuzzle:
                  seed: Optional[int] = None,
                  random: bool = True) -> None:
 
+        if size[0] <= 0 or size[1] <= 0:
+            raise ValueError
         self._size_x = size[0]
         self._size_y = size[1]
 
@@ -126,3 +128,28 @@ class NumPuzzle:
             seed += position * factorial(index)
 
         self.seed = seed
+
+    def __str__(self) -> str:
+        # Instantiate a copy of the board for quicker access.
+        board = self.board
+        # String to be returned.
+        string = ""
+        # Get number of digits necessary per number.
+        digits = len(str(self.size_x * self.size_y - 1))
+        # Top boundary.
+        string += "╔" + "═" * digits + ("╦" + "═" * digits) * (self.size_x - 1) + "╗" + "\n"
+        # Middle section.
+        string += "║"
+        for x_index in range(self.size_x):
+            string += "{1:{0}}║".format(digits, board[x_index][0] if board[x_index][0] != 0 else " ")
+        string += "\n"
+        for y_index in range(1, self.size_y):
+            string += "╠" + "═" * digits + ("╬" + "═" * digits) * (self.size_x - 1) + "╣" + "\n"
+            string += "║"
+            for x_index in range(self.size_x):
+                string += "{1:{0}}║".format(digits, board[x_index][y_index] if board[x_index][y_index] != 0 else " ")
+            string += "\n"
+        # Bottom boundary.
+        string += "╚" + "═" * digits + ("╩" + "═" * digits) * (self.size_x - 1) + "╝"
+
+        return string

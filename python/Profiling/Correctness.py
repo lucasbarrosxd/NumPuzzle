@@ -8,7 +8,7 @@ import random
 
 class NumPuzzleTests(unittest.TestCase):
     # NumPuzzle class used. Change to run a unittest with another class.
-    NumPuzzle = NumPuzzleD.NumPuzzle
+    NumPuzzle = NumPuzzleL.NumPuzzle
 
     def test_seed_basic(self):
         """Test basic operations with seed. Give a random 5x5 seed to NumPuzzle and try to get it back."""
@@ -148,3 +148,61 @@ class NumPuzzleTests(unittest.TestCase):
         self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 2], [3, 1]]).seed, 21)
         self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 3], [1, 2]]).seed, 22)
         self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 3], [2, 1]]).seed, 23)
+
+    def test_stringify(self):
+        # Test 1x1 board.
+        string = ("╔═╗\n"
+                  "║ ║\n"
+                  "╚═╝")
+        self.assertEqual(str(self.NumPuzzle(size=(1, 1), seed=0)), string)
+        # Test 2x1 board.
+        string = ("╔═╦═╗\n"
+                  "║1║ ║\n"
+                  "╚═╩═╝")
+        self.assertEqual(str(self.NumPuzzle(size=(2, 1), seed=0)), string)
+        # Test 1x2 board.
+        string = ("╔═╗\n"
+                  "║1║\n"
+                  "╠═╣\n"
+                  "║ ║\n"
+                  "╚═╝")
+        self.assertEqual(str(self.NumPuzzle(size=(1, 2), seed=0)), string)
+        # Test 3x1 board.
+        string = ("╔═╦═╦═╗\n"
+                  "║1║2║ ║\n"
+                  "╚═╩═╩═╝")
+        self.assertEqual(str(self.NumPuzzle(size=(3, 1), seed=0)), string)
+        # Test 2x2 board.
+        string = ("╔═╦═╗\n"
+                  "║1║3║\n"
+                  "╠═╬═╣\n"
+                  "║2║ ║\n"
+                  "╚═╩═╝")
+        self.assertEqual(str(self.NumPuzzle(size=(2, 2), seed=0)), string)
+        # Test 1x3 board.
+        string = ("╔═╗\n"
+                  "║1║\n"
+                  "╠═╣\n"
+                  "║2║\n"
+                  "╠═╣\n"
+                  "║ ║\n"
+                  "╚═╝")
+        self.assertEqual(str(self.NumPuzzle(size=(1, 3), seed=0)), string)
+        # Test 3x3 board.
+        string = ("╔═╦═╦═╗\n"
+                  "║1║4║7║\n"
+                  "╠═╬═╬═╣\n"
+                  "║2║5║8║\n"
+                  "╠═╬═╬═╣\n"
+                  "║3║6║ ║\n"
+                  "╚═╩═╩═╝")
+        self.assertEqual(str(self.NumPuzzle(size=(3, 3), seed=0)), string)
+        # Test reversed 3x3 board.
+        string = ("╔═╦═╦═╗\n"
+                  "║ ║6║3║\n"
+                  "╠═╬═╬═╣\n"
+                  "║8║5║2║\n"
+                  "╠═╬═╬═╣\n"
+                  "║7║4║1║\n"
+                  "╚═╩═╩═╝")
+        self.assertEqual(str(self.NumPuzzle(size=(3, 3), seed=362879)), string)
