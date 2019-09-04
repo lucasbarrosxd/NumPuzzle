@@ -40,9 +40,18 @@ class NumPuzzle:
         return self.board[position[0]][position[1]]
     __matmul__ = _at
 
-    def _find(self, num: Optional[int]) -> Tuple[int, int]:
-        raise NotImplementedError
-    __rmatmul__ = _find
+    def _find(self, number: int) -> Tuple[int, int]:
+        # Validate number.
+        if not 0 <= number < self.size_x * self.size_y:
+            raise ValueError
+
+        board = self.board
+        # Iterate through numbers until the right one is found.
+        for index_x in range(self.size_x):
+            for index_y in range(self.size_y):
+                if board[index_x][index_y] == number:
+                    return index_x, index_y
+    __mod__ = _find
 
     @property
     def seed(self) -> int:

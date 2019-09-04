@@ -8,7 +8,7 @@ import random
 
 class NumPuzzleTests(unittest.TestCase):
     # NumPuzzle class used. Change to run a unittest with another class.
-    NumPuzzle = NumPuzzleD.NumPuzzle
+    NumPuzzle = NumPuzzleS.NumPuzzle
 
     def test_seed_basic(self):
         """Test basic operations with seed. Give a random 5x5 seed to NumPuzzle and try to get it back."""
@@ -38,3 +38,15 @@ class NumPuzzleTests(unittest.TestCase):
             for index_x in range(5):
                 for index_y in range(5):
                     self.assertEqual(random_board[index_x][index_y], numpu @ (index_x, index_y))
+
+    def test_find(self):
+        """Test finding at what position a given number is at. Give a random 5x5 board to NumPuzzle and match all
+        numbers with the original board."""
+        for i in range(10000):
+            random_sequence = list(range(5 * 5))
+            random.shuffle(random_sequence)
+            random_board = [random_sequence[5 * i:5 * i + 5] for i in range(5)]
+            numpu = self.NumPuzzle(size=(5, 5), board=random_board)
+            for index_x in range(5):
+                for index_y in range(5):
+                    self.assertEqual((index_x, index_y), numpu % random_board[index_x][index_y])

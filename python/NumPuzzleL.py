@@ -40,7 +40,7 @@ class NumPuzzle:
         return self._board[position[0]][position[1]]
     __matmul__ = _at
 
-    def _find(self, number: Optional[int]) -> Tuple[int, int]:
+    def _find(self, number: int) -> Tuple[int, int]:
         # Validate number.
         if not 0 <= number < self.size_x * self.size_y:
             raise ValueError
@@ -50,7 +50,7 @@ class NumPuzzle:
             for index_y in range(self.size_y):
                 if self._board[index_x][index_y] == number:
                     return index_x, index_y
-    __rmatmul__ = _find
+    __mod__ = _find
 
     @property
     def seed(self) -> int:

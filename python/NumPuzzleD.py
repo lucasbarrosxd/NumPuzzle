@@ -43,13 +43,13 @@ class NumPuzzle:
                 return number
     __matmul__ = _at
 
-    def _find(self, number: Optional[int]) -> Tuple[int, int]:
+    def _find(self, number: int) -> Tuple[int, int]:
         # Validate number.
         if not 0 <= number < self.size_x * self.size_y:
             raise ValueError
 
         return self._board[number]
-    __rmatmul__ = _find
+    __mod__ = _find
 
     @property
     def seed(self) -> int:
@@ -111,7 +111,7 @@ class NumPuzzle:
 
         # For each number, place it in it's correct position.
         for number in self._board:
-            board[self._board[number][1]][self._board[number][0]] = number
+            board[self._board[number][0]][self._board[number][1]] = number
 
         return board
 
