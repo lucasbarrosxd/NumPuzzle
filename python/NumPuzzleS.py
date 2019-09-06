@@ -2,9 +2,10 @@
 from .AbstractNumPuzzle import AbsNumPuzzle
 # Imported libraries.
 from bisect import bisect
+from copy import deepcopy
 from math import factorial
 from random import randrange
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Dict
 
 
 class NumPuzzle(AbsNumPuzzle):
@@ -151,6 +152,48 @@ class NumPuzzle(AbsNumPuzzle):
             seed += position * factorial(index)
 
         self.seed = seed
+
+    def neighbors(self) -> Dict[str, "AbsNumPuzzle"]:
+        neighbors = dict()
+
+        pos = self._find(0)
+        if 0 < pos[0] < self.size_x - 1:
+            # Can go both left and right.
+            neighbors['L'] = deepcopy(self)
+            neighbors['L'].move('L', to_blank=False)
+            neighbors['R'] = deepcopy(self)
+            neighbors['R'].move('R', to_blank=False)
+        elif 0 < pos[0]:
+            # Can only go left.
+            neighbors['L'] = deepcopy(self)
+            neighbors['L'].move('L', to_blank=False)
+        elif pos[0] < self.size_x - 1:
+            # Can only go right.
+            neighbors['R'] = deepcopy(self)
+            neighbors['R'].move('R', to_blank=False)
+        else:
+            # Can't move horizontally.
+            pass
+
+        if 0 < pos[1] < self.size_y - 1:
+            # Can go both up and down.
+            neighbors['U'] = deepcopy(self)
+            neighbors['U'].move('U', to_blank=False)
+            neighbors['D'] = deepcopy(self)
+            neighbors['D'].move('D', to_blank=False)
+        elif 0 < pos[1]:
+            # Can only go up.
+            neighbors['U'] = deepcopy(self)
+            neighbors['U'].move('U', to_blank=False)
+        elif pos[1] < self.size_y - 1:
+            # Can only go down.
+            neighbors['D'] = deepcopy(self)
+            neighbors['D'].move('D', to_blank=False)
+        else:
+            # Can't move vertically.
+            pass
+
+        return neighbors
 
     def __str__(self) -> str:
         # Instantiate a copy of the board for quicker access.

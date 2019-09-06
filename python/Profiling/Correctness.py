@@ -241,6 +241,58 @@ class NumPuzzleTests(unittest.TestCase):
         self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 3], [1, 2]]).seed, 22)
         self.assertEqual(self.NumPuzzle(size=(2, 2), board=[[0, 3], [2, 1]]).seed, 23)
 
+    def test_neighbors(self):
+        numpu = self.NumPuzzle(size=(3, 3), seed=0)
+        neighbors = numpu.neighbors()
+
+        self.assertTrue('U' in neighbors)
+        self.assertTrue('L' in neighbors)
+        self.assertFalse('D' in neighbors)
+        self.assertFalse('R' in neighbors)
+
+        self.assertListEqual(neighbors['U'].board, [[1, 2, 3], [4, 5, 6], [7, 0, 8]])
+        self.assertListEqual(neighbors['L'].board, [[1, 2, 3], [4, 5, 0], [7, 8, 6]])
+
+        neighbors = neighbors['U'].neighbors()
+        self.assertTrue('U' in neighbors)
+        self.assertTrue('L' in neighbors)
+        self.assertTrue('D' in neighbors)
+        self.assertFalse('R' in neighbors)
+
+        self.assertListEqual(neighbors['U'].board, [[1, 2, 3], [4, 5, 6], [0, 7, 8]])
+        self.assertListEqual(neighbors['L'].board, [[1, 2, 3], [4, 0, 6], [7, 5, 8]])
+        self.assertListEqual(neighbors['D'].board, [[1, 2, 3], [4, 5, 6], [7, 8, 0]])
+
+        neighbors = neighbors['L'].neighbors()
+        self.assertTrue('U' in neighbors)
+        self.assertTrue('L' in neighbors)
+        self.assertTrue('D' in neighbors)
+        self.assertTrue('R' in neighbors)
+
+        self.assertListEqual(neighbors['U'].board, [[1, 2, 3], [0, 4, 6], [7, 5, 8]])
+        self.assertListEqual(neighbors['L'].board, [[1, 0, 3], [4, 2, 6], [7, 5, 8]])
+        self.assertListEqual(neighbors['D'].board, [[1, 2, 3], [4, 6, 0], [7, 5, 8]])
+        self.assertListEqual(neighbors['R'].board, [[1, 2, 3], [4, 5, 6], [7, 0, 8]])
+
+        neighbors = neighbors['L'].neighbors()
+        self.assertTrue('U' in neighbors)
+        self.assertFalse('L' in neighbors)
+        self.assertTrue('D' in neighbors)
+        self.assertTrue('R' in neighbors)
+
+        self.assertListEqual(neighbors['U'].board, [[0, 1, 3], [4, 2, 6], [7, 5, 8]])
+        self.assertListEqual(neighbors['D'].board, [[1, 3, 0], [4, 2, 6], [7, 5, 8]])
+        self.assertListEqual(neighbors['R'].board, [[1, 2, 3], [4, 0, 6], [7, 5, 8]])
+
+        neighbors = neighbors['U'].neighbors()
+        self.assertFalse('U' in neighbors)
+        self.assertFalse('L' in neighbors)
+        self.assertTrue('D' in neighbors)
+        self.assertTrue('R' in neighbors)
+
+        self.assertListEqual(neighbors['D'].board, [[1, 0, 3], [4, 2, 6], [7, 5, 8]])
+        self.assertListEqual(neighbors['R'].board, [[4, 1, 3], [0, 2, 6], [7, 5, 8]])
+
     def test_stringify(self):
         # Test 1x1 board.
         string = ("╔═╗\n"
