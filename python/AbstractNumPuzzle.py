@@ -22,6 +22,12 @@ class AbsNumPuzzle:
     def size_y(self) -> int:
         return self._size[1]
 
+    def __hash__(self) -> int:
+        raise NotImplementedError
+
+    def __eq__(self, other: "AbsNumPuzzle") -> bool:
+        raise NotImplementedError
+
     def _at(self, position: Tuple[int, int]) -> int:
         raise NotImplementedError
 

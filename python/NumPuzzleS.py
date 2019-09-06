@@ -25,6 +25,15 @@ class NumPuzzle(AbsNumPuzzle):
         else:
             raise ValueError
 
+    def __hash__(self) -> int:
+        return self.seed
+
+    def __eq__(self, other: "NumPuzzle") -> bool:
+        if self.size != other.size:
+            return False
+
+        return self.seed == other.seed
+
     def _at(self, position: Tuple[int, int]) -> Optional[int]:
         # Validate indexes.
         if not 0 <= position[0] < self.size_x or not 0 <= position[1] < self.size_y:
