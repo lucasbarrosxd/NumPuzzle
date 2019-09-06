@@ -8,7 +8,7 @@ import random
 
 class NumPuzzleTests(unittest.TestCase):
     # NumPuzzle class used. Change to run a unittest with another class.
-    NumPuzzle = NumPuzzleL.NumPuzzle
+    NumPuzzle = NumPuzzleS.NumPuzzle
 
     def test_seed_basic(self):
         """Test basic operations with seed. Give a random 5x5 seed to NumPuzzle and try to get it back."""
@@ -51,7 +51,98 @@ class NumPuzzleTests(unittest.TestCase):
                 for index_y in range(5):
                     self.assertEqual((index_x, index_y), numpu % random_board[index_x][index_y])
 
+    def test_move(self):
+        """Test moving tiles in the puzzle. Test on a solved 3x3 board."""
+        numpu = self.NumPuzzle(size=(3, 3), seed=0)
+        self.assertRaises(ValueError, numpu.move, 'D', False)
+        self.assertRaises(ValueError, numpu.move, 'R', False)
+        numpu.move(direction='U', to_blank=False)
+        self.assertEqual(numpu._at((2, 2)), 8)
+        self.assertEqual(numpu._at((2, 1)), 0)
+        self.assertRaises(ValueError, numpu.move, 'R', False)
+        numpu.move(direction='U', to_blank=False)
+        self.assertEqual(numpu._at((2, 1)), 7)
+        self.assertEqual(numpu._at((2, 0)), 0)
+        self.assertRaises(ValueError, numpu.move, 'U', False)
+        self.assertRaises(ValueError, numpu.move, 'R', False)
+        numpu.move(direction='L', to_blank=False)
+        self.assertEqual(numpu._at((2, 0)), 4)
+        self.assertEqual(numpu._at((1, 0)), 0)
+        self.assertRaises(ValueError, numpu.move, 'U', False)
+        numpu.move(direction='L', to_blank=False)
+        self.assertEqual(numpu._at((1, 0)), 1)
+        self.assertEqual(numpu._at((0, 0)), 0)
+        self.assertRaises(ValueError, numpu.move, 'U', False)
+        self.assertRaises(ValueError, numpu.move, 'L', False)
+        numpu.move(direction='D', to_blank=False)
+        self.assertEqual(numpu._at((0, 0)), 2)
+        self.assertEqual(numpu._at((0, 1)), 0)
+        self.assertRaises(ValueError, numpu.move, 'L', False)
+        numpu.move(direction='D', to_blank=False)
+        self.assertEqual(numpu._at((0, 1)), 3)
+        self.assertEqual(numpu._at((0, 2)), 0)
+        self.assertRaises(ValueError, numpu.move, 'L', False)
+        self.assertRaises(ValueError, numpu.move, 'D', False)
+        numpu.move(direction='R', to_blank=False)
+        self.assertEqual(numpu._at((0, 2)), 6)
+        self.assertEqual(numpu._at((1, 2)), 0)
+        self.assertRaises(ValueError, numpu.move, 'D', False)
+        numpu.move(direction='R', to_blank=False)
+        self.assertEqual(numpu._at((0, 0)), 2)
+        self.assertEqual(numpu._at((1, 0)), 1)
+        self.assertEqual(numpu._at((2, 0)), 4)
+        self.assertEqual(numpu._at((0, 1)), 3)
+        self.assertEqual(numpu._at((1, 1)), 5)
+        self.assertEqual(numpu._at((2, 1)), 7)
+        self.assertEqual(numpu._at((0, 2)), 6)
+        self.assertEqual(numpu._at((1, 2)), 8)
+        self.assertEqual(numpu._at((2, 2)), 0)
+        self.assertRaises(ValueError, numpu.move, 'U', True)
+        self.assertRaises(ValueError, numpu.move, 'L', True)
+        numpu.move(direction='R', to_blank=True)
+        self.assertEqual(numpu._at((0, 2)), 6)
+        self.assertEqual(numpu._at((1, 2)), 0)
+        self.assertRaises(ValueError, numpu.move, 'U', True)
+        numpu.move(direction='R', to_blank=True)
+        self.assertEqual(numpu._at((0, 1)), 3)
+        self.assertEqual(numpu._at((0, 2)), 0)
+        self.assertRaises(ValueError, numpu.move, 'R', True)
+        self.assertRaises(ValueError, numpu.move, 'U', True)
+        numpu.move(direction='D', to_blank=True)
+        self.assertEqual(numpu._at((0, 0)), 2)
+        self.assertEqual(numpu._at((0, 1)), 0)
+        self.assertRaises(ValueError, numpu.move, 'R', True)
+        numpu.move(direction='D', to_blank=True)
+        self.assertEqual(numpu._at((1, 0)), 1)
+        self.assertEqual(numpu._at((0, 0)), 0)
+        self.assertRaises(ValueError, numpu.move, 'R', True)
+        self.assertRaises(ValueError, numpu.move, 'D', True)
+        numpu.move(direction='L', to_blank=True)
+        self.assertEqual(numpu._at((2, 0)), 4)
+        self.assertEqual(numpu._at((1, 0)), 0)
+        self.assertRaises(ValueError, numpu.move, 'D', True)
+        numpu.move(direction='L', to_blank=True)
+        self.assertEqual(numpu._at((2, 1)), 7)
+        self.assertEqual(numpu._at((2, 0)), 0)
+        self.assertRaises(ValueError, numpu.move, 'D', True)
+        self.assertRaises(ValueError, numpu.move, 'L', True)
+        numpu.move(direction='U', to_blank=True)
+        self.assertEqual(numpu._at((2, 2)), 8)
+        self.assertEqual(numpu._at((2, 1)), 0)
+        self.assertRaises(ValueError, numpu.move, 'L', True)
+        numpu.move(direction='U', to_blank=True)
+        self.assertEqual(numpu._at((0, 0)), 1)
+        self.assertEqual(numpu._at((1, 0)), 4)
+        self.assertEqual(numpu._at((2, 0)), 7)
+        self.assertEqual(numpu._at((0, 1)), 2)
+        self.assertEqual(numpu._at((1, 1)), 5)
+        self.assertEqual(numpu._at((2, 1)), 8)
+        self.assertEqual(numpu._at((0, 2)), 3)
+        self.assertEqual(numpu._at((1, 2)), 6)
+        self.assertEqual(numpu._at((2, 2)), 0)
+
     def test_seed_to_board_conversion(self):
+        """Test if given a seed the right board is generated. Test all boards of order 4 or less."""
         # Check the 1x1 board.
         self.assertListEqual(self.NumPuzzle(size=(1, 1), seed=0).board, [[0]])
         # Check all 2x1 boards.
@@ -101,6 +192,7 @@ class NumPuzzleTests(unittest.TestCase):
         self.assertListEqual(self.NumPuzzle(size=(2, 2), seed=23).board, [[0, 3], [2, 1]])
 
     def test_board_to_seed_conversion(self):
+        """Test if given a board the right seed is generated. Test all boards of order 4 or less."""
         # Check the 1x1 board.
         self.assertEqual(self.NumPuzzle(size=(1, 1), board=[[0]]).seed, 0)
         # Check all 2x1 boards.

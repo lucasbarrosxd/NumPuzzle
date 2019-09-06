@@ -53,6 +53,39 @@ class NumPuzzle:
         return self._board[number]
     __mod__ = _find
 
+    def move(self, direction: str, to_blank: bool = True) -> None:
+        pos = self._find(0)
+
+        if direction == 'L' or direction == 'R':
+            # Horizontal move.
+            other_x = pos[0] + (1 if to_blank != (direction == 'R') else -1)
+            if 0 <= other_x < self.size_x:
+                # Move is valid.
+                board = self.board
+                # Swap values.
+                board[pos[0]][pos[1]] = board[other_x][pos[1]]
+                board[other_x][pos[1]] = 0
+                self.board = board
+            else:
+                # Move is invalid. Crossing over a border.
+                raise ValueError
+        elif direction == 'U' or direction == 'D':
+            # Vertical move.
+            other_y = pos[1] + (1 if to_blank != (direction == 'D') else -1)
+            if 0 <= other_y < self.size_y:
+                # Move is valid.
+                board = self.board
+                # Swap values.
+                board[pos[0]][pos[1]] = board[pos[0]][other_y]
+                board[pos[0]][other_y] = 0
+                self.board = board
+            else:
+                # Move is invalid. Crossing over a border.
+                raise ValueError
+        else:
+            # Invalid move argument.
+            raise ValueError
+
     @property
     def seed(self) -> int:
         board_sequence = [number for col in self.board for number in col]
