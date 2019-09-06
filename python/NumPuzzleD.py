@@ -1,3 +1,5 @@
+# Import from project.
+from .AbstractNumPuzzle import AbsNumPuzzle
 # Imported libraries.
 from bisect import bisect
 from math import factorial
@@ -5,18 +7,14 @@ from random import randrange
 from typing import Optional, Tuple, List
 
 
-class NumPuzzle:
+class NumPuzzle(AbsNumPuzzle):
     def __init__(self,
                  size: Tuple[int, int] = (3, 3),
                  board: Optional[List[List[int]]] = None,
                  seed: Optional[int] = None,
                  random: bool = True) -> None:
 
-        if size[0] <= 0 or size[1] <= 0:
-            raise ValueError
-        self._size_x = size[0]
-        self._size_y = size[1]
-
+        super().__init__(size)
         if board is not None:
             self.board = board
         elif seed is not None:
@@ -25,14 +23,6 @@ class NumPuzzle:
             self.seed = randrange(factorial(size[0] * size[1]))
         else:
             raise ValueError
-
-    @property
-    def size_x(self) -> int:
-        return self._size_x
-
-    @property
-    def size_y(self) -> int:
-        return self._size_y
 
     def _at(self, position: Tuple[int, int]) -> int:
         # Validate indexes.
