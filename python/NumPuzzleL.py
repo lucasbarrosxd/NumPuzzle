@@ -192,50 +192,7 @@ class NumPuzzle(NumPu):
 
         self._board = value
 
-    def neighbors(self) -> Dict[Text, "NumPuzzle"]:
-        neighbors = dict()
-
-        zero_x, zero_y = self._find(0)
-
-        if 0 < int(zero_x) < int(self.size_x) - 1:
-            # Can go both left and right.
-            neighbors['L'] = deepcopy(self)
-            neighbors['L'].move('L', on_blank=True)
-            neighbors['R'] = deepcopy(self)
-            neighbors['R'].move('R', on_blank=True)
-        elif 0 < int(zero_x):
-            # Can only go left.
-            neighbors['L'] = deepcopy(self)
-            neighbors['L'].move('L', on_blank=True)
-        elif zero_x < self.size_x - 1:
-            # Can only go right.
-            neighbors['R'] = deepcopy(self)
-            neighbors['R'].move('R', on_blank=True)
-        else:
-            # Can't move horizontally.
-            pass
-
-        if 0 < int(zero_y) < int(self.size_y) - 1:
-            # Can go both up and down.
-            neighbors['U'] = deepcopy(self)
-            neighbors['U'].move('U', on_blank=True)
-            neighbors['D'] = deepcopy(self)
-            neighbors['D'].move('D', on_blank=True)
-        elif 0 < int(zero_y):
-            # Can only go up.
-            neighbors['U'] = deepcopy(self)
-            neighbors['U'].move('U', on_blank=True)
-        elif int(zero_y) < int(self.size_y) - 1:
-            # Can only go down.
-            neighbors['D'] = deepcopy(self)
-            neighbors['D'].move('D', on_blank=True)
-        else:
-            # Can't move vertically.
-            pass
-
-        return neighbors
-
-    def __str__(self) -> str:
+    def __str__(self) -> Text:
         # Instantiate a copy of the board for quicker access.
         board = self.board
         # String to be returned.
