@@ -1,3 +1,5 @@
+"""NumPuzzle interface definition."""
+
 # Imported libraries.
 from copy import deepcopy
 # # Typing
@@ -180,7 +182,7 @@ class NumPuzzle:
         Raises
         ------
         ValueError
-            If the number can not be found in the given NumPuzzle.
+            If the number cannot be found in the given NumPuzzle.
         """
         raise NotImplementedError
 
@@ -287,6 +289,21 @@ class NumPuzzle:
         """
         raise NotImplementedError
 
+    def __str__(self) -> Text:
+        """Convert NumPuzzle to text format.
+
+        Parameters
+        ----------
+        self : NumPuzzle
+            The NumPuzzle to convert to textual format.
+
+        Returns
+        -------
+        Text
+            A multi-line string with a graphical representation of the NumPuzzle's board.
+        """
+        raise NotImplementedError
+
     def neighbors(self) -> Dict[Text, "NumPuzzle"]:
         """Calculate boards which can be reached with 1 move.
 
@@ -299,22 +316,22 @@ class NumPuzzle:
         -------
         Dict[Text, NumPuzzle]
             A dictionary representing the valid moves that can be applied to self. It has at most 4 keys, each being
-            one of "U", "L", "D" and "R", representing the directions up, left, down and right, respectively. The values
-            associated to each key are the NumPuzzle that results from applying the move that is the key associated with
-            the given value.
+            one of "U", "L", "D" and "R", representing the directions up, left, down and right, respectively. The value
+            associated with each key is the NumPuzzle that results from applying the move that is the key associated
+            with the given value.
         """
         # Variable to be returned.
         neighbors = dict()
         # Find the position of the blank tile.
         pos_x, pos_y = self._find(0)
         # Check if the blank tile is near the horizontal edges.
-        if 0 < pos_x < self.size_x - 1:
+        if 0 < int(pos_x) < int(self.size_x) - 1:
             # Not near any horizontal edges. Can go both left and right.
             neighbors['L'] = deepcopy(self)
             neighbors['L'].move('L', on_blank=True)
             neighbors['R'] = deepcopy(self)
             neighbors['R'].move('R', on_blank=True)
-        elif 0 < pos_x:
+        elif 0 < int(pos_x):
             # Near the right horizontal edge. Can only go left.
             neighbors['L'] = deepcopy(self)
             neighbors['L'].move('L', on_blank=True)
@@ -327,13 +344,13 @@ class NumPuzzle:
             pass
 
         # Check if the blank tile is near the vertical edges.
-        if 0 < pos_y < self.size_y - 1:
+        if 0 < int(pos_y) < self.size_y - 1:
             # Not near any vertical edges. Can go both up and down.
             neighbors['U'] = deepcopy(self)
             neighbors['U'].move('U', on_blank=False)
             neighbors['D'] = deepcopy(self)
             neighbors['D'].move('D', on_blank=False)
-        elif 0 < pos_y:
+        elif 0 < int(pos_y):
             # Near the bottom vertical edge. Can only go up.
             neighbors['U'] = deepcopy(self)
             neighbors['U'].move('U', on_blank=False)
@@ -364,7 +381,7 @@ class NumPuzzle:
             representing a valid move (down, left, up, right respectively). If this sequence of moves is applied to
             self, self should become the solved board.
         None
-            If there is no solution for the given NumPuzzle.
+            If there is no path that reaches the solution for the given NumPuzzle.
         """
         # Keep track of nodes that have been discovered. Also keep their parent and the move that was applied to the
         # parent to get the given node, in order to reconstruct the move path later.
@@ -422,7 +439,7 @@ class NumPuzzle:
             representing a valid move (down, left, up, right respectively). If this sequence of moves is applied to
             self, self should become the solved board.
         None
-            If there is no solution for the given NumPuzzle.
+            If there is no path that reaches the solution for the given NumPuzzle.
         """
         # Keep track of nodes that have been discovered. Also keep their parent and the move that was applied to the
         # parent to get the given node, in order to reconstruct the move path later.
@@ -478,19 +495,20 @@ class NumPuzzle:
         solved_board = NumPuzzle(size=self.size, seed=0).board
         incorrect_count = 0
 
-        for x in range(self.size_x):
-            for y in range(self.size_y):
+        for x in range(int(self.size_x)):
+            for y in range(int(self.size_y)):
                 if current_board[x][y] != solved_board[x][y]:
                     incorrect_count += 1
 
         return incorrect_count
 
-    def min_distance_heuristic(self) -> Integral:
+    def distance_heuristic(self) -> Integral:
         """Calculate a minimum number of moves necessary to get all tiles in the correct positions.
 
         The minimum number of moves necessary calculated for a given tile is the sum of it's vertical distance to the
         correct position and it's horizontal distance to the correct position. The value returned is the sum of the
-        the minimum number of moves necessary for all tiles.
+        the minimum number of moves necessary for all tiles. Note that this value is not necessarily the number of
+        moves the smallest solution uses, but a number of moves smaller than the number of moves of any solution.
 
         Parameters
         ----------
@@ -506,8 +524,8 @@ class NumPuzzle:
         current_board = self.board
         total_distance = 0
 
-        for x in range(self.size_x):
-            for y in range(self.size_y):
+        for x in range(int(self.size_x)):
+            for y in range(int(self.size_y)):
                 current_num = current_board[x][y]
 
                 correct_x = (current_num - 1) // self.size_x if current_num != 0 else self.size_x - 1
