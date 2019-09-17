@@ -1,21 +1,26 @@
-# Imported from project.
-from .AbstractNumPuzzle import AbsNumPuzzle
+"""NumPuzzle implementation that uses an integer."""
+
 # Imported libraries.
 from bisect import bisect
-from copy import deepcopy
 from math import factorial
 from random import randrange
-from typing import Optional, Tuple, List, Dict
+# # Typing.
+from numbers import Integral
+from typing import List, Optional, Text, Tuple
+# Imported from project.
+from .AbstractNumPuzzle import NumPuzzle as NumPuInterface
 
 
-class NumPuzzle(AbsNumPuzzle):
+class NumPuzzle(NumPuInterface):
     def __init__(self,
-                 size: Tuple[int, int] = (3, 3),
-                 board: Optional[List[List[int]]] = None,
-                 seed: Optional[int] = None,
+                 size: Tuple[Integral, Integral] = (3, 3),
+                 board: Optional[List[List[Integral]]] = None,
+                 seed: Optional[Integral] = None,
                  random: bool = True) -> None:
 
-        super().__init__(size)
+        # Sizes are immutable. Set them directly.
+        self._size = size
+
         if board is not None:
             self.board = board
         elif seed is not None:
@@ -25,61 +30,74 @@ class NumPuzzle(AbsNumPuzzle):
         else:
             raise ValueError
 
-    def __hash__(self) -> int:
+    @property
+    def size(self) -> Tuple[Integral, Integral]:
+        return self._size
+
+    @property
+    def size_x(self) -> Integral:
+        return self._size[0]
+
+    @property
+    def size_y(self) -> Integral:
+        return self._size[1]
+
+    def __hash__(self) -> Integral:
         return self.seed
 
     def __eq__(self, other: "NumPuzzle") -> bool:
+        # Compare sizes first.
         if self.size != other.size:
             return False
 
         return self.seed == other.seed
 
-    def _at(self, position: Tuple[int, int]) -> Optional[int]:
+    def _at(self, position: Tuple[Integral, Integral]) -> Optional[Integral]:
         # Validate indexes.
-        if not 0 <= position[0] < self.size_x or not 0 <= position[1] < self.size_y:
+        if not 0 <= int(position[0]) < int(self.size_x) or not 0 <= int(position[1]) < int(self.size_y):
             raise ValueError
 
-        return self.board[position[0]][position[1]]
+        return self.board[int(position[0])][int(position[1])]
     __matmul__ = _at
 
-    def _find(self, number: int) -> Tuple[int, int]:
+    def _find(self, number: Integral) -> Tuple[Integral, Integral]:
         # Validate number.
-        if not 0 <= number < self.size_x * self.size_y:
+        if not 0 <= int(number) < int(self.size_x * self.size_y):
             raise ValueError
 
         board = self.board
         # Iterate through numbers until the right one is found.
-        for index_x in range(self.size_x):
-            for index_y in range(self.size_y):
+        for index_x in range(int(self.size_x)):
+            for index_y in range(int(self.size_y)):
                 if board[index_x][index_y] == number:
                     return index_x, index_y
     __mod__ = _find
 
-    def move(self, direction: str, to_blank: bool = True) -> None:
-        pos = self._find(0)
+    def move(self, direction: Text, on_blank: bool = False) -> None:
+        zero_x, zero_y = self._find(0)
 
         if direction == 'L' or direction == 'R':
             # Horizontal move.
-            other_x = pos[0] + (1 if to_blank != (direction == 'R') else -1)
-            if 0 <= other_x < self.size_x:
+            other_x = int(zero_x) + (1 if on_blank == (direction == 'R') else -1)
+            if 0 <= other_x < int(self.size_x):
                 # Move is valid.
                 board = self.board
                 # Swap values.
-                board[pos[0]][pos[1]] = board[other_x][pos[1]]
-                board[other_x][pos[1]] = 0
+                board[int(zero_x)][int(zero_y)] = board[other_x][int(zero_y)]
+                board[other_x][int(zero_y)] = 0
                 self.board = board
             else:
                 # Move is invalid. Crossing over a border.
                 raise ValueError
         elif direction == 'U' or direction == 'D':
             # Vertical move.
-            other_y = pos[1] + (1 if to_blank != (direction == 'D') else -1)
-            if 0 <= other_y < self.size_y:
+            other_y = int(zero_y) + (1 if on_blank == (direction == 'D') else -1)
+            if 0 <= other_y < int(self.size_y):
                 # Move is valid.
                 board = self.board
                 # Swap values.
-                board[pos[0]][pos[1]] = board[pos[0]][other_y]
-                board[pos[0]][other_y] = 0
+                board[int(zero_x)][int(zero_y)] = board[int(zero_x)][other_y]
+                board[int(zero_x)][other_y] = 0
                 self.board = board
             else:
                 # Move is invalid. Crossing over a border.
@@ -89,31 +107,31 @@ class NumPuzzle(AbsNumPuzzle):
             raise ValueError
 
     @property
-    def seed(self) -> int:
+    def seed(self) -> Integral:
         return self._seed
 
     @seed.setter
-    def seed(self, value: int) -> None:
+    def seed(self, value: Integral) -> None:
         # Seed has (x * y)! combinations. Validate seed.
-        if not 0 <= value < factorial(self.size_x * self.size_y):
+        if not 0 <= int(value) < factorial(self.size_x * self.size_y):
             raise ValueError
 
         self._seed = value
 
     @property
-    def board(self) -> List[List[int]]:
+    def board(self) -> List[List[Integral]]:
         # Seed value needs to be changed when calculating.
         seed = self.seed
         # List to numbers which haven't been found in the seed yet.
-        sequence = list(range(1, self.size_x * self.size_y)) + [0]
+        sequence = list(range(1, int(self.size_x * self.size_y))) + [0]
         # Initialize board.
         board = list()
 
         # Find number in each position.
-        for index_x in range(self.size_x):
+        for index_x in range(int(self.size_x)):
             # Add new column.
             board.append(list())
-            for index_y in range(self.size_y):
+            for index_y in range(int(self.size_y)):
                 # Get factorial which will be used in the divisions.
                 fact = factorial(len(sequence) - 1)
                 # Calculate next number in the sequence.
@@ -124,7 +142,7 @@ class NumPuzzle(AbsNumPuzzle):
         return board
 
     @board.setter
-    def board(self, value: List[List[int]]) -> None:
+    def board(self, value: List[List[Integral]]) -> None:
         # Check if number of rows is incorrect.
         if len(value) != self.size_x:
             raise ValueError
@@ -162,49 +180,7 @@ class NumPuzzle(AbsNumPuzzle):
 
         self.seed = seed
 
-    def neighbors(self) -> Dict[str, "AbsNumPuzzle"]:
-        neighbors = dict()
-
-        pos = self._find(0)
-        if 0 < pos[0] < self.size_x - 1:
-            # Can go both left and right.
-            neighbors['L'] = deepcopy(self)
-            neighbors['L'].move('L', to_blank=False)
-            neighbors['R'] = deepcopy(self)
-            neighbors['R'].move('R', to_blank=False)
-        elif 0 < pos[0]:
-            # Can only go left.
-            neighbors['L'] = deepcopy(self)
-            neighbors['L'].move('L', to_blank=False)
-        elif pos[0] < self.size_x - 1:
-            # Can only go right.
-            neighbors['R'] = deepcopy(self)
-            neighbors['R'].move('R', to_blank=False)
-        else:
-            # Can't move horizontally.
-            pass
-
-        if 0 < pos[1] < self.size_y - 1:
-            # Can go both up and down.
-            neighbors['U'] = deepcopy(self)
-            neighbors['U'].move('U', to_blank=False)
-            neighbors['D'] = deepcopy(self)
-            neighbors['D'].move('D', to_blank=False)
-        elif 0 < pos[1]:
-            # Can only go up.
-            neighbors['U'] = deepcopy(self)
-            neighbors['U'].move('U', to_blank=False)
-        elif pos[1] < self.size_y - 1:
-            # Can only go down.
-            neighbors['D'] = deepcopy(self)
-            neighbors['D'].move('D', to_blank=False)
-        else:
-            # Can't move vertically.
-            pass
-
-        return neighbors
-
-    def __str__(self) -> str:
+    def __str__(self) -> Text:
         # Instantiate a copy of the board for quicker access.
         board = self.board
         # String to be returned.
@@ -215,13 +191,13 @@ class NumPuzzle(AbsNumPuzzle):
         string += "╔" + "═" * digits + ("╦" + "═" * digits) * (self.size_x - 1) + "╗" + "\n"
         # Middle section.
         string += "║"
-        for x_index in range(self.size_x):
+        for x_index in range(int(self.size_x)):
             string += "{1:{0}}║".format(digits, board[x_index][0] if board[x_index][0] != 0 else " ")
         string += "\n"
-        for y_index in range(1, self.size_y):
+        for y_index in range(1, int(self.size_y)):
             string += "╠" + "═" * digits + ("╬" + "═" * digits) * (self.size_x - 1) + "╣" + "\n"
             string += "║"
-            for x_index in range(self.size_x):
+            for x_index in range(int(self.size_x)):
                 string += "{1:{0}}║".format(digits, board[x_index][y_index] if board[x_index][y_index] != 0 else " ")
             string += "\n"
         # Bottom boundary.

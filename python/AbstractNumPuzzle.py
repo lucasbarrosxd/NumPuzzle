@@ -344,20 +344,20 @@ class NumPuzzle:
             pass
 
         # Check if the blank tile is near the vertical edges.
-        if 0 < int(pos_y) < self.size_y - 1:
+        if 0 < int(pos_y) < int(self.size_y) - 1:
             # Not near any vertical edges. Can go both up and down.
             neighbors['U'] = deepcopy(self)
-            neighbors['U'].move('U', on_blank=False)
+            neighbors['U'].move('U', on_blank=True)
             neighbors['D'] = deepcopy(self)
-            neighbors['D'].move('D', on_blank=False)
+            neighbors['D'].move('D', on_blank=True)
         elif 0 < int(pos_y):
             # Near the bottom vertical edge. Can only go up.
             neighbors['U'] = deepcopy(self)
-            neighbors['U'].move('U', on_blank=False)
+            neighbors['U'].move('U', on_blank=True)
         elif pos_y < self.size_y - 1:
             # Near the top vertical edge. Can only go down.
             neighbors['D'] = deepcopy(self)
-            neighbors['D'].move('D', on_blank=False)
+            neighbors['D'].move('D', on_blank=True)
         else:
             # Near both vertical edges. Can't move vertically.
             pass
