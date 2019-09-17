@@ -2,17 +2,16 @@
 
 # Imported libraries.
 from bisect import bisect
-from copy import deepcopy
 from math import factorial
 from random import randrange
 # # Tipagem.
 from numbers import Integral
-from typing import Optional, Text, Tuple, List, Dict
+from typing import List, Optional, Text, Tuple
 # Imported from project.
-from .AbstractNumPuzzle import NumPuzzle as NumPu
+from .AbstractNumPuzzle import NumPuzzle as NumPuInterface
 
 
-class NumPuzzle(NumPu):
+class NumPuzzle(NumPuInterface):
     def __init__(self,
                  size: Tuple[Integral, Integral] = (3, 3),
                  board: Optional[List[List[Integral]]] = None,
@@ -56,21 +55,19 @@ class NumPuzzle(NumPu):
         other_board = other.board
 
         # For each position of the board, compare if they have the same number.
-        for index_x in range(len(self_board)):
-            for index_y in range(len(other_board)):
+        for index_x in range(int(self.size_x)):
+            for index_y in range(int(self.size_y)):
                 if self_board[index_x][index_y] != other_board[index_x][index_y]:
                     return False
 
         return True
 
     def _at(self, position: Tuple[Integral, Integral]) -> Integral:
-        position = int(position[0]), int(position[1])
-
         # Validate indexes.
-        if not 0 <= position[0] < int(self.size_x) or not 0 <= position[1] < int(self.size_y):
+        if not 0 <= int(position[0]) < int(self.size_x) or not 0 <= int(position[1]) < int(self.size_y):
             raise ValueError
 
-        return self._board[position[0]][position[1]]
+        return self._board[int(position[0])][int(position[1])]
     __matmul__ = _at
 
     def _find(self, number: Integral) -> Tuple[Integral, Integral]:
@@ -127,8 +124,8 @@ class NumPuzzle(NumPu):
         # Sequence from where the numbers would be extracted from when calculating board from seed.
         number = board_sequence.pop()
         # Pass zero as size_x * size_y for easier compatibility with sorting algorithms.
-        numbers = [number if number != 0 else self.size_x * self.size_y]
-        for index in range(1, self.size_x * self.size_y):
+        numbers = [number if int(number) != 0 else self.size_x * self.size_y]
+        for index in range(1, int(self.size_x * self.size_y)):
             # Get last number.
             number = board_sequence.pop()
             # Find position where the given number would be placed.
