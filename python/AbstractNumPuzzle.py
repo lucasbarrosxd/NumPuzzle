@@ -1,5 +1,6 @@
 """NumPuzzle interface definition."""
 
+# Imports ------------------------------------------------------------------------------------------------------------ #
 # Imported libraries.
 from copy import deepcopy
 # # Typing
@@ -17,6 +18,7 @@ class NumPuzzle:
 
     This interface defines base implementations for graph methods and related.
     """
+    # Constructors --------------------------------------------------------------------------------------------------- #
     def __init__(self,
                  size: Tuple[Integral, Integral] = (3, 3),
                  board: Optional[List[List[Integral]]] = None,
@@ -54,7 +56,7 @@ class NumPuzzle:
             If board is None, seed is None and random is False, thus the board didn't initialize.
         """
         raise NotImplementedError
-
+    # Size properties ------------------------------------------------------------------------------------------------ #
     @property
     def size(self) -> Tuple[Integral, Integral]:
         """Get the width and height of the NumPuzzle's board.
@@ -104,41 +106,87 @@ class NumPuzzle:
         """
         raise NotImplementedError
 
-    def __hash__(self) -> Integral:
-        """Hashes the NumPuzzle to a unique integer.
+    # Board properties ----------------------------------------------------------------------------------------------- #
+    @property
+    def board(self) -> List[List[Integral]]:
+        """Get the current NumPuzzle's board.
 
-        Hashes are only unique between NumPuzzles with same sizes.
+        The board is a matrix representation of the current state of the NumPuzzle. Each XY coordinate of the matrix
+        having a different number corresponding to a tile.
 
         Parameters
         ----------
         self : NumPuzzle
-            The NumPuzzle to be hashed.
+            The NumPuzzle whose board state will be calculated.
+
+        Returns
+        -------
+        List[List[Integral]]
+            A matrix representing the current board state.
+        """
+        raise NotImplementedError
+
+    @board.setter
+    def board(self, value: List[List[Integral]]) -> None:
+        """Set the NumPuzzle to the given matrix.
+
+        Parameters
+        ----------
+        self : NumPuzzle
+            The NumPuzzle whose board is to be set.
+        value : List[List[Integral]]
+            A matrix containing the board to be set to.
+
+        Raises
+        ------
+        ValueError
+            If the 'value' matrix contains a value smaller than zero or greater than 'self''s horizontal size times
+            'self''s vertical size.
+
+            If the 'value' matrix contains a value that appears more than once.
+        """
+        raise NotImplementedError
+
+    # Seed properties ------------------------------------------------------------------------------------------------ #
+    @property
+    def seed(self) -> Integral:
+        """Gets the seed for the current board state.
+
+        The seed is an integer unique to the NumPuzzle's board. Since a board can have (size_x * size_y)! different
+        combinations, the seed must be a value between 0 (inclusive) and (size_x * size_y)! (non-inclusive).
+
+        Parameters
+        ----------
+        self : NumPuzzle
+            The NumPuzzle whose board will have the seed calculated for.
 
         Returns
         -------
         Integral
-            The hash value of the NumPuzzle.
+            An unique integer representing the board state.
         """
         raise NotImplementedError
 
-    def __eq__(self, other: "NumPuzzle") -> bool:
-        """Compare two NumPuzzles.
+    @seed.setter
+    def seed(self, value: Integral) -> None:
+        """Set the current board state to the given seed.
 
         Parameters
         ----------
         self : NumPuzzle
-            The first NumPuzzle to be compared.
-        other : NumPuzzle
-            The second NumPuzzle to be compared.
+            The NumPuzzle whose board state is to be changed.
+        value : Integral
+            The seed value used to calculate the new board state.
 
-        Returns
-        -------
-        bool
-            True if self and board have the same size, and if for each position of each board, self and other have the
-            same number at the same position. False otherwise.
+        Raises
+        ------
+        ValueError
+            If the value parameter is outside the valid range. That is, if it's less than 0 or greater than the
+            factorial of the product of it's horizontal and vertical sizes.
         """
         raise NotImplementedError
 
+    # Other getter-like methods -------------------------------------------------------------------------------------- #
     def _at(self, position: Tuple[Integral, Integral]) -> Integral:
         """Find which number is at the given position of the NumPuzzle's board.
 
@@ -186,106 +234,43 @@ class NumPuzzle:
         """
         raise NotImplementedError
 
-    def move(self, direction: Text, on_blank: bool = False) -> None:
-        """Execute a move on the given NumPuzzle to change it's state.
+    # Operators and magic methods ------------------------------------------------------------------------------------ #
+    __matmul__ = _at
+
+    __mod__ = _find
+
+    def __hash__(self) -> Integral:
+        """Hashes the NumPuzzle to a unique integer.
+
+        Hashes are only unique between NumPuzzles with same sizes.
 
         Parameters
         ----------
         self : NumPuzzle
-            The board which the move will be applied to.
-        direction : Text
-            The direction of the move. Must be one of "U", "D", "L" or "R" (representing Up, Down, Left and Right,
-            respectivelly).
-        on_blank : bool
-            If the move should be applied on the blank tile or on a normal tile. If True, the move will be applied on
-            the blank tile, which will move according to the direction parameter. If False, the move will be applied on
-            a normal tile, which will move according to the direction parameter.
-
-        Raises
-        ------
-        ValueError
-            If the direction parameter is not one of "U", "D", "L" or "R".
-
-            If the move cannot be completed due to the tile being on one of the edges of the board, and the direction
-            being towards that edge of the board.
-        """
-        raise NotImplementedError
-
-    @property
-    def seed(self) -> Integral:
-        """Gets the seed for the current board state.
-
-        The seed is an integer unique to the NumPuzzle's board. Since a board can have (size_x * size_y)! different
-        combinations, the seed must be a value between 0 (inclusive) and (size_x * size_y)! (non-inclusive).
-
-        Parameters
-        ----------
-        self : NumPuzzle
-            The NumPuzzle whose board will have the seed calculated for.
+            The NumPuzzle to be hashed.
 
         Returns
         -------
         Integral
-            An unique integer representing the board state.
+            The hash value of the NumPuzzle.
         """
         raise NotImplementedError
 
-    @seed.setter
-    def seed(self, value: Integral) -> None:
-        """Set the current board state to the given seed.
+    def __eq__(self, other: "NumPuzzle") -> bool:
+        """Compare two NumPuzzles.
 
         Parameters
         ----------
         self : NumPuzzle
-            The NumPuzzle whose board state is to be changed.
-        value : Integral
-            The seed value used to calculate the new board state.
-
-        Raises
-        ------
-        ValueError
-            If the value parameter is outside the valid range. That is, if it's less than 0 or greater than the
-            factorial of the product of it's horizontal and vertical sizes.
-        """
-        raise NotImplementedError
-
-    @property
-    def board(self) -> List[List[Integral]]:
-        """Get the current NumPuzzle's board.
-
-        The board is a matrix representation of the current state of the NumPuzzle. Each XY coordinate of the matrix
-        having a different number corresponding to a tile.
-
-        Parameters
-        ----------
-        self : NumPuzzle
-            The NumPuzzle whose board state will be calculated.
+            The first NumPuzzle to be compared.
+        other : NumPuzzle
+            The second NumPuzzle to be compared.
 
         Returns
         -------
-        List[List[Integral]]
-            A matrix representing the current board state.
-        """
-        raise NotImplementedError
-
-    @board.setter
-    def board(self, value: List[List[Integral]]) -> None:
-        """Set the NumPuzzle to the given matrix.
-
-        Parameters
-        ----------
-        self : NumPuzzle
-            The NumPuzzle whose board is to be set.
-        value : List[List[Integral]]
-            A matrix containing the board to be set to.
-
-        Raises
-        ------
-        ValueError
-            If the 'value' matrix contains a value smaller than zero or greater than 'self''s horizontal size times
-            'self''s vertical size.
-
-            If the 'value' matrix contains a value that appears more than once.
+        bool
+            True if self and board have the same size, and if for each position of each board, self and other have the
+            same number at the same position. False otherwise.
         """
         raise NotImplementedError
 
@@ -304,6 +289,33 @@ class NumPuzzle:
         """
         raise NotImplementedError
 
+    # Instance methods ----------------------------------------------------------------------------------------------- #
+    def move(self, direction: Text, on_blank: bool = False) -> None:
+        """Execute a move on the given NumPuzzle to change it's state.
+
+        Parameters
+        ----------
+        self : NumPuzzle
+            The board which the move will be applied to.
+        direction : Text
+            The direction of the move. Must be one of "U", "D", "L" or "R" (representing Up, Down, Left and Right,
+            respectively).
+        on_blank : bool
+            If the move should be applied on the blank tile or on a normal tile. If True, the move will be applied on
+            the blank tile, which will move according to the direction parameter. If False, the move will be applied on
+            a normal tile, which will move according to the direction parameter.
+
+        Raises
+        ------
+        ValueError
+            If the direction parameter is not one of "U", "D", "L" or "R".
+
+            If the move cannot be completed due to the tile being on one of the edges of the board, and the direction
+            being towards that edge of the board.
+        """
+        raise NotImplementedError
+
+    # Graph methods -------------------------------------------------------------------------------------------------- #
     def neighbors(self) -> Dict[Text, "NumPuzzle"]:
         """Calculate boards which can be reached with 1 move.
 

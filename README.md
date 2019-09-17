@@ -31,7 +31,7 @@ And the objective is to get the board to an ordered state such as:
 ╚═╩═╩═╝    ╚═╩═╩═╝
 ```
 
-Where the only allowed moves are swapping the position of the empty tile with a tile directly neighboring it (not counting diagonals or wrap-arounds).
+Where the only allowed moves are swapping the position of the empty tile with a tile directly neighboring it (not counting diagonals or wraparounds).
 
 e.g.: in the shuffled board the only legal moves are moving 4 to the right or moving 3 up.
 

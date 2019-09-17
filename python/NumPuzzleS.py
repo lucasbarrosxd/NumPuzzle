@@ -1,5 +1,6 @@
 """NumPuzzle implementation that uses an integer."""
 
+# Imports ------------------------------------------------------------------------------------------------------------ #
 # Imported libraries.
 from bisect import bisect
 from math import factorial
@@ -12,15 +13,19 @@ from .AbstractNumPuzzle import NumPuzzle as NumPuInterface
 
 
 class NumPuzzle(NumPuInterface):
+    # Constructors --------------------------------------------------------------------------------------------------- #
     def __init__(self,
                  size: Tuple[Integral, Integral] = (3, 3),
                  board: Optional[List[List[Integral]]] = None,
                  seed: Optional[Integral] = None,
                  random: bool = True) -> None:
 
-        # Sizes are immutable. Set them directly.
+        # Sizes are immutable. Validate and set them directly.
+        if not int(size[0]) > 0 or not int(size[1]) > 0:
+            raise ValueError
         self._size = size
 
+        # Make the board.
         if board is not None:
             self.board = board
         elif seed is not None:
@@ -30,6 +35,7 @@ class NumPuzzle(NumPuInterface):
         else:
             raise ValueError
 
+    # Size properties ------------------------------------------------------------------------------------------------ #
     @property
     def size(self) -> Tuple[Integral, Integral]:
         return self._size
@@ -42,82 +48,7 @@ class NumPuzzle(NumPuInterface):
     def size_y(self) -> Integral:
         return self._size[1]
 
-    def __hash__(self) -> Integral:
-        return self.seed
-
-    def __eq__(self, other: "NumPuzzle") -> bool:
-        # Compare sizes first.
-        if self.size != other.size:
-            return False
-
-        return self.seed == other.seed
-
-    def _at(self, position: Tuple[Integral, Integral]) -> Optional[Integral]:
-        # Validate indexes.
-        if not 0 <= int(position[0]) < int(self.size_x) or not 0 <= int(position[1]) < int(self.size_y):
-            raise ValueError
-
-        return self.board[int(position[0])][int(position[1])]
-    __matmul__ = _at
-
-    def _find(self, number: Integral) -> Tuple[Integral, Integral]:
-        # Validate number.
-        if not 0 <= int(number) < int(self.size_x * self.size_y):
-            raise ValueError
-
-        board = self.board
-        # Iterate through numbers until the right one is found.
-        for index_x in range(int(self.size_x)):
-            for index_y in range(int(self.size_y)):
-                if board[index_x][index_y] == number:
-                    return index_x, index_y
-    __mod__ = _find
-
-    def move(self, direction: Text, on_blank: bool = False) -> None:
-        zero_x, zero_y = self._find(0)
-
-        if direction == 'L' or direction == 'R':
-            # Horizontal move.
-            other_x = int(zero_x) + (1 if on_blank == (direction == 'R') else -1)
-            if 0 <= other_x < int(self.size_x):
-                # Move is valid.
-                board = self.board
-                # Swap values.
-                board[int(zero_x)][int(zero_y)] = board[other_x][int(zero_y)]
-                board[other_x][int(zero_y)] = 0
-                self.board = board
-            else:
-                # Move is invalid. Crossing over a border.
-                raise ValueError
-        elif direction == 'U' or direction == 'D':
-            # Vertical move.
-            other_y = int(zero_y) + (1 if on_blank == (direction == 'D') else -1)
-            if 0 <= other_y < int(self.size_y):
-                # Move is valid.
-                board = self.board
-                # Swap values.
-                board[int(zero_x)][int(zero_y)] = board[int(zero_x)][other_y]
-                board[int(zero_x)][other_y] = 0
-                self.board = board
-            else:
-                # Move is invalid. Crossing over a border.
-                raise ValueError
-        else:
-            # Invalid move argument.
-            raise ValueError
-
-    @property
-    def seed(self) -> Integral:
-        return self._seed
-
-    @seed.setter
-    def seed(self, value: Integral) -> None:
-        # Seed has (x * y)! combinations. Validate seed.
-        if not 0 <= int(value) < factorial(self.size_x * self.size_y):
-            raise ValueError
-
-        self._seed = value
-
+    # Board properties ----------------------------------------------------------------------------------------------- #
     @property
     def board(self) -> List[List[Integral]]:
         # Seed value needs to be changed when calculating.
@@ -180,6 +111,54 @@ class NumPuzzle(NumPuInterface):
 
         self.seed = seed
 
+    # Seed properties ------------------------------------------------------------------------------------------------ #
+    @property
+    def seed(self) -> Integral:
+        return self._seed
+
+    @seed.setter
+    def seed(self, value: Integral) -> None:
+        # Seed has (x * y)! combinations. Validate seed.
+        if not 0 <= int(value) < factorial(self.size_x * self.size_y):
+            raise ValueError
+
+        self._seed = value
+
+    # Other getter-like methods -------------------------------------------------------------------------------------- #
+    def _at(self, position: Tuple[Integral, Integral]) -> Optional[Integral]:
+        # Validate indexes.
+        if not 0 <= int(position[0]) < int(self.size_x) or not 0 <= int(position[1]) < int(self.size_y):
+            raise ValueError
+
+        return self.board[int(position[0])][int(position[1])]
+
+    def _find(self, number: Integral) -> Tuple[Integral, Integral]:
+        # Validate number.
+        if not 0 <= int(number) < int(self.size_x * self.size_y):
+            raise ValueError
+
+        board = self.board
+        # Iterate through numbers until the right one is found.
+        for index_x in range(int(self.size_x)):
+            for index_y in range(int(self.size_y)):
+                if board[index_x][index_y] == number:
+                    return index_x, index_y
+
+    # Operators and magic methods ------------------------------------------------------------------------------------ #
+    __matmul__ = _at
+
+    __mod__ = _find
+
+    def __hash__(self) -> Integral:
+        return self.seed
+
+    def __eq__(self, other: "NumPuzzle") -> bool:
+        # Compare sizes first.
+        if self.size != other.size:
+            return False
+
+        return self.seed == other.seed
+
     def __str__(self) -> Text:
         # Instantiate a copy of the board for quicker access.
         board = self.board
@@ -204,3 +183,37 @@ class NumPuzzle(NumPuInterface):
         string += "╚" + "═" * digits + ("╩" + "═" * digits) * (self.size_x - 1) + "╝"
 
         return string
+
+    # Instance methods ----------------------------------------------------------------------------------------------- #
+    def move(self, direction: Text, on_blank: bool = False) -> None:
+        zero_x, zero_y = self._find(0)
+
+        if direction == 'L' or direction == 'R':
+            # Horizontal move.
+            other_x = int(zero_x) + (1 if on_blank == (direction == 'R') else -1)
+            if 0 <= other_x < int(self.size_x):
+                # Move is valid.
+                board = self.board
+                # Swap values.
+                board[int(zero_x)][int(zero_y)] = board[other_x][int(zero_y)]
+                board[other_x][int(zero_y)] = 0
+                self.board = board
+            else:
+                # Move is invalid. Crossing over a border.
+                raise ValueError
+        elif direction == 'U' or direction == 'D':
+            # Vertical move.
+            other_y = int(zero_y) + (1 if on_blank == (direction == 'D') else -1)
+            if 0 <= other_y < int(self.size_y):
+                # Move is valid.
+                board = self.board
+                # Swap values.
+                board[int(zero_x)][int(zero_y)] = board[int(zero_x)][other_y]
+                board[int(zero_x)][other_y] = 0
+                self.board = board
+            else:
+                # Move is invalid. Crossing over a border.
+                raise ValueError
+        else:
+            # Invalid move argument.
+            raise ValueError
