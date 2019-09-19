@@ -504,13 +504,16 @@ class NumPuzzle:
             The number of tiles in the incorrect position in the board.
         """
         current_board = self.board
-        solved_board = NumPuzzle(size=self.size, seed=0).board
         incorrect_count = 0
 
-        for x in range(int(self.size_x)):
-            for y in range(int(self.size_y)):
-                if current_board[x][y] != solved_board[x][y]:
-                    incorrect_count += 1
+        for row in range(int(self.size_y)):
+            for col in range(int(self.size_x)):
+                current_num = current_board[col][row]
+
+                correct_x = (current_num - 1) % self.size_x if current_num != 0 else self.size_x - 1
+                correct_y = (current_num - 1) // self.size_x if current_num != 0 else self.size_y - 1
+
+                incorrect_count += 1 if col != correct_x or row != correct_y else 0
 
         return incorrect_count
 
@@ -536,13 +539,13 @@ class NumPuzzle:
         current_board = self.board
         total_distance = 0
 
-        for x in range(int(self.size_x)):
-            for y in range(int(self.size_y)):
-                current_num = current_board[x][y]
+        for row in range(int(self.size_y)):
+            for col in range(int(self.size_x)):
+                current_num = current_board[col][row]
 
-                correct_x = (current_num - 1) // self.size_x if current_num != 0 else self.size_x - 1
-                correct_y = (current_num - 1) % self.size_y if current_num != 0 else self.size_y - 1
+                correct_x = (current_num - 1) % self.size_x if current_num != 0 else self.size_x - 1
+                correct_y = (current_num - 1) // self.size_x if current_num != 0 else self.size_y - 1
 
-                total_distance += abs(correct_x - x) + abs(correct_y - y)
+                total_distance += abs(col - correct_x) + abs(row - correct_y)
 
         return total_distance

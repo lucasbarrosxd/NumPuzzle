@@ -5,7 +5,7 @@ import unittest
 from python import NumPuzzleL, NumPuzzleD, NumPuzzleS
 
 # NumPuzzle class to run tests with. Change to run tests with a different implementation.
-NumPuzzle = NumPuzzleL.NumPuzzle
+NumPuzzle = NumPuzzleS.NumPuzzle
 
 
 class DistanceHeuristicTests(unittest.TestCase):
@@ -14,7 +14,7 @@ class DistanceHeuristicTests(unittest.TestCase):
         # # Check normal boards.
         # # # 3x3 NumPuzzles.
         self.assertEqual(NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 5, 8], [3, 6, 0]]).distance_heuristic(), 0)
-        self.assertEqual(NumPuzzle(size=(3, 3), board=[[0, 6, 3], [8, 5, 2], [7, 4, 1]]).distance_heuristic(), 20)
+        self.assertEqual(NumPuzzle(size=(3, 3), board=[[0, 6, 3], [8, 5, 2], [7, 4, 1]]).distance_heuristic(), 24)
         self.assertEqual(NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 5, 8], [3, 0, 6]]).distance_heuristic(), 2)
         self.assertEqual(NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 5, 8], [0, 3, 6]]).distance_heuristic(), 4)
         # # # 2x2 NumPuzzles.
@@ -25,7 +25,7 @@ class DistanceHeuristicTests(unittest.TestCase):
         self.assertEqual(NumPuzzle(size=(4, 4), board=[[1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [4, 8, 12, 0]])
                          .distance_heuristic(), 0)
         self.assertEqual(NumPuzzle(size=(4, 4), board=[[0, 12, 8, 4], [15, 11, 7, 3], [14, 10, 6, 2], [13, 9, 5, 1]])
-                         .distance_heuristic(), 56)
+                         .distance_heuristic(), 64)
         self.assertEqual(NumPuzzle(size=(4, 4), board=[[0, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [4, 8, 12, 1]])
                          .distance_heuristic(), 12)
         # # Check boards with different width and height.

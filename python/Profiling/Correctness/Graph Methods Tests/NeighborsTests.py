@@ -5,7 +5,7 @@ import unittest
 from python import NumPuzzleL, NumPuzzleD, NumPuzzleS
 
 # NumPuzzle class to run tests with. Change to run tests with a different implementation.
-NumPuzzle = NumPuzzleL.NumPuzzle
+NumPuzzle = NumPuzzleS.NumPuzzle
 
 
 class NeighborsTests(unittest.TestCase):
@@ -22,7 +22,7 @@ class NeighborsTests(unittest.TestCase):
         # # # # Bottom-left corner.
         self.assertDictEqual(NumPuzzle(size=(3, 3), board=[[1, 4, 0], [2, 5, 8], [3, 6, 7]]).neighbors(),
                              {
-                                 "U": NumPuzzle(size=(3, 3), board=[[1, 0, 5], [2, 5, 8], [3, 6, 7]]),
+                                 "U": NumPuzzle(size=(3, 3), board=[[1, 0, 4], [2, 5, 8], [3, 6, 7]]),
                                  "R": NumPuzzle(size=(3, 3), board=[[1, 4, 8], [2, 5, 0], [3, 6, 7]])
                              })
         # # # # Top-left corner.
@@ -61,9 +61,9 @@ class NeighborsTests(unittest.TestCase):
         # # # # Right side.
         self.assertDictEqual(NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 5, 8], [3, 0, 6]]).neighbors(),
                              {
-                                 "L": NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 5, 8], [0, 3, 6]]),
-                                 "U": NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 0, 5], [3, 6, 8]]),
-                                 "R": NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 5, 8], [3, 6, 0]])
+                                 "U": NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 5, 8], [0, 3, 6]]),
+                                 "L": NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 0, 8], [3, 5, 6]]),
+                                 "D": NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 5, 8], [3, 6, 0]])
                              })
         # # # # Center.
         self.assertDictEqual(NumPuzzle(size=(3, 3), board=[[1, 4, 7], [2, 0, 8], [3, 6, 5]]).neighbors(),
@@ -113,10 +113,10 @@ class NeighborsTests(unittest.TestCase):
                                  "R": NumPuzzle(size=(3, 2), board=[[1, 5], [2, 0], [3, 4]])
                              })
         # # # # Top-left corner.
-        self.assertDictEqual(NumPuzzle(size=(3, 2), board=[[0, 4], [2, 5], [3, 4]]).neighbors(),
+        self.assertDictEqual(NumPuzzle(size=(3, 2), board=[[0, 4], [2, 5], [3, 1]]).neighbors(),
                              {
-                                 "D": NumPuzzle(size=(3, 2), board=[[4, 0], [2, 5], [3, 4]]),
-                                 "R": NumPuzzle(size=(3, 2), board=[[2, 4], [0, 5], [3, 4]])
+                                 "D": NumPuzzle(size=(3, 2), board=[[4, 0], [2, 5], [3, 1]]),
+                                 "R": NumPuzzle(size=(3, 2), board=[[2, 4], [0, 5], [3, 1]])
                              })
         # # # # Top-right corner.
         self.assertDictEqual(NumPuzzle(size=(3, 2), board=[[1, 4], [2, 5], [0, 3]]).neighbors(),
@@ -173,9 +173,9 @@ class NeighborsTests(unittest.TestCase):
         # # # # Right side.
         self.assertDictEqual(NumPuzzle(size=(2, 3), board=[[1, 3, 5], [2, 0, 4]]).neighbors(),
                              {
-                                 "L": NumPuzzle(size=(2, 3), board=[[1, 0, 5], [2, 3, 4]]),
                                  "U": NumPuzzle(size=(2, 3), board=[[1, 3, 5], [0, 2, 4]]),
-                                 "R": NumPuzzle(size=(2, 3), board=[[1, 3, 5], [2, 4, 0]])
+                                 "L": NumPuzzle(size=(2, 3), board=[[1, 0, 5], [2, 3, 4]]),
+                                 "D": NumPuzzle(size=(2, 3), board=[[1, 3, 5], [2, 4, 0]])
                              })
 
 
