@@ -208,9 +208,9 @@ class BoardTests(unittest.TestCase):
         self.assertEqual(NumPuzzle(size=(3, 2), seed=NumPuzzle(size=(3, 2), board=board).seed).board, board)
         # # # 2x3 NumPuzzles.
         board = [[1, 3, 5], [2, 4, 0]]
-        self.assertEqual(NumPuzzle(size=(2, 3), seed=NumPuzzle(size=(2, 2), board=board).seed).board, board)
+        self.assertEqual(NumPuzzle(size=(2, 3), seed=NumPuzzle(size=(2, 3), board=board).seed).board, board)
         board = [[0, 4, 2], [5, 3, 1]]
-        self.assertEqual(NumPuzzle(size=(2, 3), seed=NumPuzzle(size=(2, 2), board=board).seed).board, board)
+        self.assertEqual(NumPuzzle(size=(2, 3), seed=NumPuzzle(size=(2, 3), board=board).seed).board, board)
         # # Check edge cases.
         # # # 5x1 NumPuzzles.
         board = [[1], [2], [3], [4], [0]]

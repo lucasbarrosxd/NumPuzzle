@@ -161,8 +161,10 @@ class SeedTests(unittest.TestCase):
         self.assertEqual(NumPuzzle(size=(2, 2), board=NumPuzzle(size=(2, 2), seed=23).board).seed, 23)
         # # # 4x4 NumPuzzles.
         self.assertEqual(NumPuzzle(size=(4, 4), board=NumPuzzle(size=(4, 4), seed=0).board).seed, 0)
-        self.assertEqual(NumPuzzle(size=(4, 4), board=NumPuzzle(size=(4, 4), seed=12).board).seed, 12345678901234)
-        self.assertEqual(NumPuzzle(size=(4, 4), board=NumPuzzle(size=(4, 4), seed=23).board).seed, 20922789887999)
+        self.assertEqual(
+            NumPuzzle(size=(4, 4), board=NumPuzzle(size=(4, 4), seed=12345678901234).board).seed, 12345678901234)
+        self.assertEqual(
+            NumPuzzle(size=(4, 4), board=NumPuzzle(size=(4, 4), seed=20922789887999).board).seed, 20922789887999)
         # # Check NumPuzzles with different width and height.
         # # # 3x2 NumPuzzles.
         self.assertEqual(NumPuzzle(size=(3, 2), board=NumPuzzle(size=(3, 2), seed=0).board).seed, 0)

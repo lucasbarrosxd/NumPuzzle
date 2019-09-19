@@ -84,7 +84,8 @@ class NumPuzzle(NumPuInterface):
     # Seed properties ------------------------------------------------------------------------------------------------ #
     @property
     def seed(self) -> Integral:
-        board_sequence = [number for col in self.board for number in col]
+        board = self.board
+        board_sequence = [board[col][row] for row in range(int(self.size_y)) for col in range(int(self.size_x))]
         # Start seed at zero and add to it.
         seed = 0
 
@@ -119,15 +120,13 @@ class NumPuzzle(NumPuInterface):
             raise ValueError
 
         # List of numbers which haven't been found in the seed yet.
-        sequence = list(range(1, self.size_x * self.size_y)) + [0]
+        sequence = list(range(1, int(self.size_x * self.size_y))) + [0]
         # Initialize board.
-        board = list()
+        board = [list() for col in range(int(self.size_x))]
 
         # Find number in each position.
-        for index_x in range(int(self.size_x)):
-            # Add new column.
-            board.append(list())
-            for index_y in range(int(self.size_y)):
+        for index_y in range(int(self.size_y)):
+            for index_x in range(int(self.size_x)):
                 # Get factorial which will be used in the divisions.
                 fact = factorial(len(sequence) - 1)
                 # Calculate next number in the sequence.

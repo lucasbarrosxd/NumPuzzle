@@ -56,13 +56,11 @@ class NumPuzzle(NumPuInterface):
         # List to numbers which haven't been found in the seed yet.
         sequence = list(range(1, int(self.size_x * self.size_y))) + [0]
         # Initialize board.
-        board = list()
+        board = [list() for col in range(int(self.size_x))]
 
         # Find number in each position.
-        for index_x in range(int(self.size_x)):
-            # Add new column.
-            board.append(list())
-            for index_y in range(int(self.size_y)):
+        for index_y in range(int(self.size_y)):
+            for index_x in range(int(self.size_x)):
                 # Get factorial which will be used in the divisions.
                 fact = factorial(len(sequence) - 1)
                 # Calculate next number in the sequence.
@@ -85,11 +83,13 @@ class NumPuzzle(NumPuInterface):
         if not set(range(0, self.size_x * self.size_y)).issubset(num for col in value for num in col):
             raise ValueError
 
-        board_sequence = [number for row in value for number in row]
+        board_sequence = [value[col][row] for row in range(int(self.size_y)) for col in range(int(self.size_x))]
+        # Start seed at zero and add to it.
         seed = 0
 
         # Sequence from where the numbers would be extracted from when calculating board from seed.
         number = board_sequence.pop()
+        # Pass zero as size_x * size_y for easier compatibility with sorting algorithms.
         numbers = [number if number != 0 else self.size_x * self.size_y]
         for index in range(1, self.size_x * self.size_y):
             # Get last number.
