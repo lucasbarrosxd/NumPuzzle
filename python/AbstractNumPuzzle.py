@@ -421,7 +421,8 @@ class NumPuzzle:
                             puzzle = discovered[puzzle][0]
                         else:
                             # Found the starting puzzle. Return move sequence.
-                            return move_path.reverse()
+                            move_path.reverse()
+                            return move_path
                 else:
                     # Not the solution. Discover neighbors.
                     for direction, neighbor in puzzle.neighbors().items():
@@ -466,6 +467,7 @@ class NumPuzzle:
             if len(puzzles) != 0:
                 # Get one of the puzzles with smallest heuristic.
                 puzzle = min(puzzles, key=puzzles.get)
+                del puzzles[puzzle]
 
                 # Check if the current puzzle is the solution.
                 if puzzle.seed == 0:
@@ -479,7 +481,8 @@ class NumPuzzle:
                             puzzle = discovered[puzzle][0]
                         else:
                             # Found the starting puzzle. Return move sequence.
-                            return move_path.reverse()
+                            move_path.reverse()
+                            return move_path
                 else:
                     # Not the solution. Discover neighbors.
                     for direction, neighbor in puzzle.neighbors().items():
