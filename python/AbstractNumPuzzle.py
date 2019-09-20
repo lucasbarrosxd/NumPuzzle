@@ -376,7 +376,7 @@ class NumPuzzle:
 
         return neighbors
 
-    def bfs(self) -> Optional[List[Text]]:
+    def breadth_first_search(self) -> Optional[List[Text]]:
         """Calculate a move sequence that solves the given board.
 
         The move sequence is calculated with the breadth-first search algorithm.
@@ -433,10 +433,10 @@ class NumPuzzle:
                 # Iterated through all reachable puzzles and didn't find a path to the solution.
                 return None
 
-    def asterisk(self, heuristic: Callable[["NumPuzzle"], Integral]) -> Optional[List[Text]]:
+    def heuristic_search(self, heuristic: Callable[["NumPuzzle"], Integral]) -> Optional[List[Text]]:
         """Calculate a move sequence that solves the given board.
 
-        The move sequence is calculated with the A* algorithm.
+        The move sequence is calculated with the heuristic search algorithm.
 
         Parameters
         ----------
@@ -489,6 +489,67 @@ class NumPuzzle:
                         if neighbor not in discovered:
                             discovered[neighbor] = puzzle, direction
                             puzzles[neighbor] = heuristic(neighbor)
+            else:
+                # Iterated through all reachable puzzles and didn't find a path to the solution.
+                return None
+
+    def astar_search(self, heuristic: Callable[["NumPuzzle"], Integral]) -> Optional[List[Text]]:
+        """Calculate a move sequence that solves the given board.
+
+        The move sequence is calculated with the A* search algorithm.
+
+        Parameters
+        ----------
+        self : NumPuzzle
+            The NumPuzzle to calculate the move sequence for.
+        heuristic : callable with self, returns an integer
+            The heuristic to compare NumPuzzles with.
+
+        Returns
+        -------
+        List[Text]
+            An ordered list (starting from zero) of text, each text being one of "D", "L", "U" and "R", each
+            representing a valid move (down, left, up, right respectively). If this sequence of moves is applied to
+            self, self should become the solved board.
+        None
+            If there is no path that reaches the solution for the given NumPuzzle.
+        """
+        # Keep track of nodes that have been discovered. Also keep their parent and the move that was applied to the
+        # parent to get the given node, in order to reconstruct the move path later. Also keep the search tree level to
+        # apply the algorithm with, starting from level 1.
+        discovered: Dict["NumPuzzle", Tuple[Optional["NumPuzzle"], Optional[Text], Integral]] \
+            = {self: (None, None, 1)}
+        # Dictionary with nodes that haven't been searched yet. Keeps the heuristic calculated as value.
+        puzzles: Dict["NumPuzzle", Integral] \
+            = {self: heuristic(self) + 1}
+
+        while True:
+            # Check if there are reachable puzzles which haven't been searched.
+            if len(puzzles) != 0:
+                # Get one of the puzzles with smallest heuristic.
+                puzzle = min(puzzles, key=puzzles.get)
+                del puzzles[puzzle]
+
+                # Check if the current puzzle is the solution.
+                if puzzle.seed == 0:
+                    # Solution found. Get the path to return. Fill path in reverse and then flip it.
+                    move_path = []
+                    while True:
+                        # Check if this puzzle is the starting puzzle.
+                        if discovered[puzzle][0] is not None:
+                            # Not the starting puzzle. Get the move applied and then check the parent.
+                            move_path.append(discovered[puzzle][1])
+                            puzzle = discovered[puzzle][0]
+                        else:
+                            # Found the starting puzzle. Return move sequence.
+                            move_path.reverse()
+                            return move_path
+                else:
+                    # Not the solution. Discover neighbors.
+                    for direction, neighbor in puzzle.neighbors().items():
+                        if neighbor not in discovered:
+                            discovered[neighbor] = puzzle, direction, discovered[puzzle][2] + 1
+                            puzzles[neighbor] = heuristic(puzzle) + discovered[neighbor][2]
             else:
                 # Iterated through all reachable puzzles and didn't find a path to the solution.
                 return None
