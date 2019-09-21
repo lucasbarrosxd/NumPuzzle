@@ -225,3 +225,27 @@ class NumPuzzle(NumPuInterface):
         else:
             # Invalid direction.
             raise ValueError
+
+    def polarity(self) -> Integral:
+        # Calculate board sequence without the blank tile.
+        board = self.board
+        board_sequence = [
+            board[col][row]
+            for row in range(int(self.size_y))
+            for col in range(int(self.size_x))
+            if board[col][row] != 0
+        ]
+
+        inversion_count = 0
+
+        # For each tile pair, compare their contents. If an earlier tile has a greater number, there is an inversion.
+        for index_first in range(len(board_sequence)):
+            for index_second in range(index_first + 1, len(board_sequence)):
+                if board_sequence[index_first] > board_sequence[index_second]:
+                    inversion_count += 1
+
+        return inversion_count
+
+    def is_solvable(self) -> bool:
+        # If polarity is pair the NumPuzzle is solvable. If it's odd it's not solvable.
+        return self.polarity() % 2 == 0

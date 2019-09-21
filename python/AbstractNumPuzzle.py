@@ -315,6 +315,42 @@ class NumPuzzle:
         """
         raise NotImplementedError
 
+    def polarity(self) -> Integral:
+        """Calculate a NumPuzzle's polarity.
+
+        The polarity is the number of inversions in a NumPuzzle board. An inversion occurs when a tile is placed ahead
+        of a tile with a greater number, of behind a tile with a smaller number. The blank tile is ignored for these
+        calculations.
+
+        Parameters
+        ----------
+        self : NumPuzzle
+            The NumPuzzle to calculate polarity for.
+
+        Returns
+        -------
+        Integral
+            The calculated polarity for the NumPuzzle. That is, the number of inversions.
+        """
+
+    def is_solvable(self) -> bool:
+        """Calculate whether a NumPuzzle can be solved or not.
+
+        Calculation is done using polarity. If the NumPuzzle's polarity is even, it's solvable. If it's odd, it's
+        not solvable.
+
+        Parameters
+        ----------
+        self : NumPuzzle
+            The NumPuzzle to check if is solvable.
+
+        Returns
+        -------
+        bool
+            True if the NumPuzzle can be solved, False otherwise.
+        """
+        raise NotImplementedError
+
     # Graph methods -------------------------------------------------------------------------------------------------- #
     def neighbors(self) -> Dict[Text, "NumPuzzle"]:
         """Calculate boards which can be reached with 1 move.
@@ -395,6 +431,10 @@ class NumPuzzle:
         None
             If there is no path that reaches the solution for the given NumPuzzle.
         """
+        # Check beforehand if the NumPuzzle can be solved.
+        if not self.is_solvable():
+            return None
+
         # Keep track of nodes that have been discovered. Also keep their parent and the move that was applied to the
         # parent to get the given node, in order to reconstruct the move path later.
         discovered: Dict["NumPuzzle", Tuple[Optional["NumPuzzle"], Optional[Text]]] \
@@ -454,6 +494,10 @@ class NumPuzzle:
         None
             If there is no path that reaches the solution for the given NumPuzzle.
         """
+        # Check beforehand if the NumPuzzle can be solved.
+        if not self.is_solvable():
+            return None
+
         # Keep track of nodes that have been discovered. Also keep their parent and the move that was applied to the
         # parent to get the given node, in order to reconstruct the move path later.
         discovered: Dict["NumPuzzle", Tuple[Optional["NumPuzzle"], Optional[Text]]] \
@@ -514,6 +558,10 @@ class NumPuzzle:
         None
             If there is no path that reaches the solution for the given NumPuzzle.
         """
+        # Check beforehand if the NumPuzzle can be solved.
+        if not self.is_solvable():
+            return None
+        
         # Keep track of nodes that have been discovered. Also keep their parent and the move that was applied to the
         # parent to get the given node, in order to reconstruct the move path later. Also keep the search tree level to
         # apply the algorithm with, starting from level 1.
