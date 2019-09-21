@@ -23,7 +23,8 @@ class NumPuzzle:
                  size: Tuple[Integral, Integral] = (3, 3),
                  board: Optional[List[List[Integral]]] = None,
                  seed: Optional[Integral] = None,
-                 random: bool = True) -> None:
+                 random: bool = True,
+                 solvable: Optional[bool] = None) -> None:
         """Initialize the NumPuzzle object.
 
         Parameters
@@ -41,6 +42,9 @@ class NumPuzzle:
         random : bool
             Initialize the board with a random seed. Only applied if the board and seed parameters are both None. If
             False, initialization will fail.
+        solvable : Optional[bool]
+            If True, only construct the object if it's a solvable NumPuzzle. If False, only construct the object if
+            it's a non-solvable NumPuzzle. If None, then accept both solvable and non-solvable NumPuzzles.
 
         Raises
         ------
@@ -52,6 +56,10 @@ class NumPuzzle:
             If the matrix in the board parameter has invalid values (values outside the valid range or repeated values).
 
             If the seed parameter is an invalid value (value outside the valid range).
+
+            If the solvable parameter is True, but a non-solvable board or seed was passed.
+
+            If the solvable parameter is False, but a solvable board or seed was passed.
 
             If board is None, seed is None and random is False, thus the board didn't initialize.
         """
@@ -561,7 +569,7 @@ class NumPuzzle:
         # Check beforehand if the NumPuzzle can be solved.
         if not self.is_solvable():
             return None
-        
+
         # Keep track of nodes that have been discovered. Also keep their parent and the move that was applied to the
         # parent to get the given node, in order to reconstruct the move path later. Also keep the search tree level to
         # apply the algorithm with, starting from level 1.

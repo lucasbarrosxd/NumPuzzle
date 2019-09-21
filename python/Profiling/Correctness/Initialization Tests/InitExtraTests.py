@@ -54,6 +54,55 @@ class InitializationExtraTests(unittest.TestCase):
         NumPuzzle(size=(1, 1), seed=0, random=True, board=[[0]])
         NumPuzzle(size=(4, 2), seed=0, random=True, board=[[1, 5], [2, 6], [3, 7], [4, 0]])
         NumPuzzle(size=(2, 4), seed=0, random=True, board=[[1, 3, 5, 7], [2, 4, 6, 0]])
+        # Check if solvability is correctly checked.
+        # # Check on a known board.
+        # # # Check if None doesn't raise errors.
+        NumPuzzle(size=(2, 2), board=[[1, 3], [2, 0]], solvable=None)
+        NumPuzzle(size=(2, 2), seed=0, solvable=None)
+        NumPuzzle(size=(2, 2), board=[[1, 2], [3, 0]], solvable=None)
+        NumPuzzle(size=(2, 2), seed=2, solvable=None)
+        NumPuzzle(size=(2, 1), board=[[1], [0]], solvable=None)
+        NumPuzzle(size=(2, 1), seed=0, solvable=None)
+        NumPuzzle(size=(2, 1), board=[[0], [1]], solvable=None)
+        NumPuzzle(size=(2, 1), seed=1, solvable=None)
+        NumPuzzle(size=(1, 2), board=[[1, 0]], solvable=None)
+        NumPuzzle(size=(1, 2), seed=0, solvable=None)
+        NumPuzzle(size=(1, 2), board=[[0, 1]], solvable=None)
+        NumPuzzle(size=(1, 2), seed=1, solvable=None)
+        NumPuzzle(size=(1, 1), board=[[0]], solvable=None)
+        NumPuzzle(size=(1, 1), seed=0, solvable=None)
+        # # # Check if a non-solvable NumPuzzle gets rejected correctly.
+        self.assertRaises(ValueError, NumPuzzle, size=(2, 2), board=[[1, 2], [3, 0]], solvable=True)
+        self.assertRaises(ValueError, NumPuzzle, size=(2, 2), seed=2, solvable=True)
+        self.assertRaises(ValueError, NumPuzzle, size=(3, 1), board=[[2], [1], [0]], solvable=True)
+        self.assertRaises(ValueError, NumPuzzle, size=(3, 1), seed=2, solvable=True)
+        self.assertRaises(ValueError, NumPuzzle, size=(1, 3), board=[[2, 1, 0]], solvable=True)
+        self.assertRaises(ValueError, NumPuzzle, size=(1, 3), seed=2, solvable=True)
+        # # # Check if a non-solvable NumPuzzle gets accepted correctly.
+        NumPuzzle(size=(2, 2), board=[[1, 2], [3, 0]], solvable=False)
+        NumPuzzle(size=(2, 2), seed=2, solvable=False)
+        NumPuzzle(size=(3, 1), board=[[2], [1], [0]], solvable=False)
+        NumPuzzle(size=(3, 1), seed=2, solvable=False)
+        NumPuzzle(size=(1, 3), board=[[2, 1, 0]], solvable=False)
+        NumPuzzle(size=(1, 3), seed=2, solvable=False)
+        # # # Check if a solvable NumPuzzle gets rejected correctly.
+        self.assertRaises(ValueError, NumPuzzle, size=(2, 2), board=[[1, 3], [2, 0]], solvable=False)
+        self.assertRaises(ValueError, NumPuzzle, size=(2, 2), seed=0, solvable=False)
+        self.assertRaises(ValueError, NumPuzzle, size=(3, 1), board=[[1], [2], [0]], solvable=False)
+        self.assertRaises(ValueError, NumPuzzle, size=(3, 1), seed=0, solvable=False)
+        self.assertRaises(ValueError, NumPuzzle, size=(1, 3), board=[[1, 2, 0]], solvable=False)
+        self.assertRaises(ValueError, NumPuzzle, size=(1, 3), seed=0, solvable=False)
+        self.assertRaises(ValueError, NumPuzzle, size=(1, 1), board=[[0]], solvable=False)
+        self.assertRaises(ValueError, NumPuzzle, size=(1, 1), seed=0, solvable=False)
+        # # # Check if a solvable NumPuzzle gets accepted correctly.
+        NumPuzzle(size=(2, 2), board=[[1, 3], [2, 0]], solvable=True)
+        NumPuzzle(size=(2, 2), seed=0, solvable=True)
+        NumPuzzle(size=(3, 1), board=[[1], [2], [0]], solvable=True)
+        NumPuzzle(size=(3, 1), seed=0, solvable=True)
+        NumPuzzle(size=(1, 3), board=[[1, 2, 0]], solvable=True)
+        NumPuzzle(size=(1, 3), seed=0, solvable=True)
+        NumPuzzle(size=(1, 1), board=[[0]], solvable=True)
+        NumPuzzle(size=(1, 1), seed=0, solvable=True)
 
     def test_instantiation_priority(self):
         # Check if parameters have the correct precedence.

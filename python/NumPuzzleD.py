@@ -18,7 +18,8 @@ class NumPuzzle(NumPuInterface):
                  size: Tuple[Integral, Integral] = (3, 3),
                  board: Optional[List[List[Integral]]] = None,
                  seed: Optional[Integral] = None,
-                 random: bool = True) -> None:
+                 random: bool = True,
+                 solvable: Optional[bool] = None) -> None:
 
         # Sizes are immutable. Validate and set them directly.
         if not int(size[0]) > 0 or not int(size[1]) > 0:
@@ -28,10 +29,20 @@ class NumPuzzle(NumPuInterface):
         # Make the board.
         if board is not None:
             self.board = board
+
+            if solvable is not None and solvable != self.is_solvable():
+                raise ValueError
         elif seed is not None:
             self.seed = seed
+
+            if solvable is not None and solvable != self.is_solvable():
+                raise ValueError
         elif random:
-            self.seed = randrange(factorial(size[0] * size[1]))
+            # Try random seeds until a NumPuzzle that matches the solvable parameter is built.
+            while True:
+                self.seed = randrange(factorial(size[0] * size[1]))
+                if solvable is None or solvable == self.is_solvable():
+                    break
         else:
             raise ValueError
 
